@@ -16,7 +16,7 @@ S = {
      'pdf': {
              'unitstd': True,
              'log': True,
-             'smooth': [2, 5, ]
+             'smooth': [2, 5, ],
              'rebin': 1,
              'low_cut': 3,
              'high_cut': 0,

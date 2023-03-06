@@ -4,10 +4,15 @@ General layout of data arrays is [..., zs, smooth, bin]
 where ...  depends on the type of data
 """
 
-
 import numpy as np
 
 from settings import S
+
+# fiducial point, order is important here!
+FID = {
+       'S8': 0.82 * np.sqrt(0.279 / 0.3),
+       'Om': 0.279,
+      }
 
 # some data layout constants
 ROOT = '/scratch/gpfs/lthiele/HSC_Y1_Nbody_sims'
@@ -28,6 +33,7 @@ NSMOOTH_ALL = 8
 NBINS_ALL = {'pdf': 19, 'ps': 14, }
 NZS = len(S['zs'])
 
+# the observational layout
 FIELDS = {
           'wide12h': 14.20,
           'hectomap': 12.26,
@@ -39,19 +45,6 @@ FIELDS = {
 TOT_AREA = sum(FIELDS.values())
 
 USE_STATS = list(filter(lambda s: s in S, ['pdf', 'ps', ]))
-
-# each entry here is a set of bins to delete, for various reasons
-DELETE_BINS = {
-               k: set(range(S[k]['high_cut'])) \
-                  | set(range(NBINS_ALL[k] - S[k]['low_cut'], NBINS_ALL[k])) \
-                  | {S[k]['delete'], } if k=='pdf' else set() \
-               for k in USE_STATS
-              }
-
-DELETE_SMOOTH = {
-                 k: set(range(NSMOOTH_ALL)) - ( set(S[k]['smooth']) if k=='pdf' else {0, } ) \
-                 for k in USE_STATS
-                }
 
 
 def transf (x, k) :
@@ -72,8 +65,12 @@ def transf (x, k) :
 
 def cut (x, k) :
     """ smoothing scale and bin cutting """
-    x = np.delete(x, tuple(DELETE_SMOOTH[k]), axis=-2)
-    x = np.delete(x, tuple(DELETE_BINS[k]), axis=-1)
+    delete_smooth = set(range(NSMOOTH_ALL)) - ( set(S[k]['smooth']) if k=='pdf' else {0, } )
+    delete_bins = set(range(S[k]['high_cut'])) \
+                  | set(range(NBINS_ALL[k] - S[k]['low_cut'], NBINS_ALL[k])) \
+                  | {S[k]['delete'], } if k=='pdf' else set()
+    x = np.delete(x, tuple(delete_smooth), axis=-2)
+    x = np.delete(x, tuple(delete_bins), axis=-1)
     return x
 
 
@@ -91,7 +88,7 @@ def _get_fiducial_impl (k, systematic='stats_fiducial') :
                         f'{f"z{zs_idx}" if zs_idx else "singlez"}_all_smooths_{field_name}'\
                         f'{"" if k!="pdf" or not S[k]["unitstd"] or systematic=="real" else "_stdmap"}.npy'
                 f = np.load(fname)
-                if len(out) == 1 ; # special case for reals :
+                if len(out) == 1 : # special case for reals :
                     f = f.reshape(1, -1)
                 if k == 'pdf' :
                     # TODO read this again
@@ -106,8 +103,8 @@ def _get_fiducial_impl (k, systematic='stats_fiducial') :
             for jj in range(len(out)) :
                 for kk in range(TNG_N_PER_POINT) :
                     sim_idx = kk*nsims + jj # some non-consecutive thing to wash out potential correlations
-                    fname = f'{ROOT}/{systematic}/'
-                            f'{f"{k}{"" if not S[k]["unitstd"] else "_unitstd"}" if k=="pdf" else "power_spectrum"}/'\
+                    fname = f'{ROOT}/{systematic}/'\
+                            f'{k+("" if not S[k]["unitstd"] else "_unitstd") if k=="pdf" else "power_spectrum"}/'\
                             f'{k if k=="pdf" else "clee"}_{f"z{zs_idx}" if zs_idx else "singlez"}_'\
                             f'nsim_{sim_idx+1}.npy'
                     f = np.load(fname)
@@ -150,15 +147,25 @@ def _get_helper (fct, *args, **kwargs) :
 
 
 def get_fiducial (systematic='stats_fiducial', cache={}) :
+    """ returns [random, bin] """
+
     if systematic not in cache :
         cache[systematic] = _get_helper(_get_fiducial_impl, systematic=systematic)
     return cache[systematic].copy()
 
 
-def get_cosmo_varied (corrected=None, cache={})
+def get_cosmo_varied (corrected=None, cache={}) :
+    """ returns [cosmology, random, bin] """
+
     if corrected not in cache :
         cache[corrected] = _get_helper(_get_cosmo_varied_impl, corrected=corrected)
-    _, Om, s8 = np.loadtxt(f'{ROOT}/stats_{f"{corrected}_" if corrected else ""}cosmo_varied/'\
-                           f'omegam_sigma8_design3.dat', unpack=True)
+    return cache[corrected].copy()
+
+
+def get_cosmo_theta () :
+    """ returns [N, 2] where theta=(S8, Om) """
+
+    _, Om, s8 = np.loadtxt(f'{ROOT}/stats_cosmo_varied/omegam_sigma8_design3.dat',
+                           unpack=True)
     S8 = s8 * np.sqrt(Om / 0.3)
-    return S8, Om, cache[corrected].copy()
+    return np.stack([S8, Om, ], axis=-1)
