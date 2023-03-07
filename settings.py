@@ -41,7 +41,7 @@ S = {
 
      # this is a bit ugly but who cares (special case when MOPED in joint mode)
      # probably never used...
-     'joint': { 'cov_mode': 'gpr', }
+     'joint': { 'cov_mode': 'gpr', },
      
      # moped settings
      'moped': {
