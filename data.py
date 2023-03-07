@@ -50,12 +50,12 @@ class Data :
     USE_STATS = list(filter(lambda s: s in S, ['pdf', 'ps', ]))
     NZS = { stat: len(S[stat]['zs']) for stat in USE_STATS }
     DELETE_SMOOTH = {
-                     stat: set(range(Data.NSMOOTH_ALL)) - ( set(S[stat]['smooth']) if stat=='pdf' else {0, } )
+                     stat: set(range(NSMOOTH_ALL)) - ( set(S[stat]['smooth']) if stat=='pdf' else {0, } )
                      for stat in USE_STATS
                     }
     DELETE_BINS = {
                    stat: set(range(S[stat]['high_cut'])) \
-                         | set(range(Data.NBINS_ALL[stat] - S[stat]['low_cut'], Data.NBINS_ALL[stat])) \
+                         | set(range(NBINS_ALL[stat] - S[stat]['low_cut'], NBINS_ALL[stat])) \
                          | {S[stat]['delete'], } if stat=='pdf' else set()
                    for stat in USE_STATS
                   }
@@ -97,7 +97,7 @@ class Data :
 
     def get_stat_mask (self, stat) :
         """ return boolean mask that is True where this stat lives """
-        return np.concatenate([np.full(NDIMS[s], s==stat, dtype=bool) for s in Data.USE_STATS])
+        return np.concatenate([np.full(Data.NDIMS[s], s==stat, dtype=bool) for s in Data.USE_STATS])
 
 
     def _get_data_array (self, *args) :
@@ -117,8 +117,8 @@ class Data :
         else :
             out = self._stack_data_helper(stat, case)
         # cuts
-        out = np.delete(out, tuple(delete_smooth), axis=-2)
-        out = np.delete(out, tuple(delete_bins), axis=-1)
+        out = np.delete(out, tuple(Data.DELETE_SMOOTH[stat]), axis=-2)
+        out = np.delete(out, tuple(Data.DELETE_BINS[stat]), axis=-1)
         # transformations
         if (r := S[stat]['rebin']) not in [None, 1, ] :
             out = out.reshape(*out.shape[:-1], -1, r).sum(axis=-1)
