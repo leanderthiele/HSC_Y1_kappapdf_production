@@ -53,7 +53,7 @@ class CompressedData (DataWrapper) :
         Cinv = np.linalg.inv(np.cov(data.get_datavec('fiducial'), rowvar=False))
         dmdt = self._derivatives(data)
         b1 = np.einsum('ab,b->a', Cinv, dmdt[0]) \
-             / np.sqrt(np.einsum('a,ab,b->', dmdt[0], Cinv, dmdt[0])
+             / np.sqrt(np.einsum('a,ab,b->', dmdt[0], Cinv, dmdt[0]))
         b2 = ( np.einsum('ab,b->a', Cinv, dmdt[1]) - np.einsum('a,a->', dmdt[1], b1) * b1 ) \
              / np.sqrt( np.einsum('a,ab,b->', dmdt[1], Cinv, dmdt[1]) - np.einsum('a,a->', dmdt[1], b1)**2 )
         return np.stack([b1, b2], axis=0)
