@@ -96,6 +96,8 @@ class Data :
                                    unpack=True)
             S8 = s8 * np.sqrt(Om / 0.3)
             return np.stack([S8, Om, ], axis=-1)
+        elif case == 'real' :
+            return None
         else :
             return Data.FID_THETA.copy()
 
