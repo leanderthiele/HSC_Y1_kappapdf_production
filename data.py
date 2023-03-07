@@ -34,7 +34,6 @@ class Data :
              }
     NSMOOTH_ALL = 8
     NBINS_ALL = {'pdf': 19, 'ps': 14, }
-    NZS = len(S['zs'])
 
     # the observational layout
     FIELDS = {
@@ -49,6 +48,7 @@ class Data :
 
     # some small computations
     USE_STATS = list(filter(lambda s: s in S, ['pdf', 'ps', ]))
+    NZS = { stat: len(S[stat]['zs']) for stat in USE_STATS }
     DELETE_SMOOTH = {
                      stat: set(range(Data.NSMOOTH_ALL)) - ( set(S[stat]['smooth']) if stat=='pdf' else {0, } )
                      for stat in USE_STATS
@@ -60,7 +60,7 @@ class Data :
                    for stat in USE_STATS
                   }
     NDIMS = {
-             stat: NZS * (NSMOOTH_ALL - len(DELETE_SMOOTH[stat])) * (NBINS_ALL - len(DELETE_BINS[stat]))
+             stat: NZS[stat] * (NSMOOTH_ALL - len(DELETE_SMOOTH[stat])) * (NBINS_ALL - len(DELETE_BINS[stat]))
              for stat in USE_STATS
             }
 
@@ -136,8 +136,8 @@ class Data :
         output = [seed, zs, smooth, nbins]
         does not perform cutting
         """
-        out = np.zeros((Data.NSEEDS[case], Data.NZS, Data.NSMOOTH_ALL, Data.NBINS_ALL[stat]))
-        for ii, zs_idx in enumerate(S['zs']) :
+        out = np.zeros((Data.NSEEDS[case], Data.NZS[stat], Data.NSMOOTH_ALL, Data.NBINS_ALL[stat]))
+        for ii, zs_idx in enumerate(S[stat]['zs']) :
             for field, area in Data.FIELDS.items() :
                 f = np.load(self._fname(stat, case, zs_idx, field, model))
                 if len(out) == 1 : # special case for real

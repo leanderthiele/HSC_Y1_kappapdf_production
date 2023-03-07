@@ -16,6 +16,7 @@ S = {
      'pdf': {
              'unitstd': True,
              'log': True,
+             'zs': [1, 2, 3, ],
              'smooth': [2, 5, ],
              'rebin': 1,
              'low_cut': 3,
@@ -24,11 +25,12 @@ S = {
             },
      
      # power spectrum settings, if not included we do not use power spectrum
-     # 'ps': {
-     #        'rebin': 1,
-     #        'low_cut': 4,
-     #        'high_cut': 6,
-     #       },
+     'ps': {
+            'rebin': 1,
+            'zs': [0, ],
+            'low_cut': 4,
+            'high_cut': 6,
+           },
      
      # moped settings
      'moped': {
