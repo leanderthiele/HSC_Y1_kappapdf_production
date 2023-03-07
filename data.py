@@ -3,12 +3,17 @@ import numpy as np
 from settings import S
 
 class Data :
+
+    # where the files are
+    ROOT = '/scratch/gpfs/lthiele/HSC_Y1_Nbody_sims'
+
     # fiducial point
     FID = {
            'S8': 0.82 * np.sqrt(0.279 / 0.3),
            'Om': 0.279,
           }
     FID_THETA = np.array(list(FID.values()))
+
     # data layout
     NCOS = 100
     # TODO TNG not implemented yet, probably do this through ratio and get into same format
@@ -30,6 +35,7 @@ class Data :
     NSMOOTH_ALL = 8
     NBINS_ALL = {'pdf': 19, 'ps': 14, }
     NZS = len(S['zs'])
+
     # the observational layout
     FIELDS = {
               'wide12h': 14.20,
@@ -41,6 +47,7 @@ class Data :
              }
     TOT_AREA = sum(FIELDS.values())
     USE_STATS = list(filter(lambda s: s in S, ['pdf', 'ps', ]))
+
     # avoid repeated disk-IO by having evaluated results in this cache
     _CACHE = {}
 
@@ -49,8 +56,22 @@ class Data :
     
     
     def get_datavec (self, case) :
-        """ only public method of this class """
+        """ main public method of this class """
         return np.concatenate([self._get_data_array(stat, case) for stat in Data.USE_STATS], axis=-1)
+
+    
+    def get_cosmo (self, case) :
+        """ get cosmology theta vector
+        if case==cosmo_varied, [N, 2, ], else [2, ],
+        in the order S8, Om
+        """
+        if case == 'cosmo_varied' :
+            _, Om, s8 = np.loadtxt(f'{Data.ROOT}/stats_cosmo_varied/omegam_sigma8_design3.dat')
+            S8 = s8 * np.sqrt(Om / 0.3)
+            return np.stack([S8, Om, ], axis=-1)
+        else :
+            return Data.FID_THETA
+
 
     def _get_data_array (self, *args) :
         """ wrapper around _stack_data which implements caching """
@@ -116,7 +137,7 @@ class Data :
         assert case in Data.NSEEDS.keys()
         assert zs_idx in [0, 1, 2, 3, 4, ]
         assert field in Data.FIELDS.keys()
-        out = f'/scratch/gpfs/lthiele/HSC_Y1_Nbody_sims/stats_{case}'
+        out = f'{Data.ROOT}/stats_{case}'
         out = f'{out}/{stat if stat=="pdf" else "power_spectrum"}'
         if case == 'cosmo_varied' :
             assert model is not None

@@ -1,62 +1,42 @@
 import numpy as np
 
-from sklearn.gaussian_process import GaussianProcessRegressor as GPR
-from sklearn.gaussian_process import kernels
-
-from data import get_fiducial, get_cosmo_varied, get_cosmo_theta, FID
+from sklearn.gaussian_process import GaussianProcessRegressor, kernels
 
 
-def _construct_gpr_input (xcosmo) :
-    return xcosmo - np.array(list(FID.values()))[None, :]
+class GPR :
+    
 
+    def __init__ (self, data, reduction=np.mean, test_idx=None) :
+        """ constructor
+        data ... something that behaves like a Data instance (but can be something different, e.g. compressed)
+                 Needs to implement get_cosmo and get_datavec methods
+        reduction ... the function used to collapse over random seeds
+        test_idx ... if given, remove this cosmology from the training set (for testing)
+        """
 
-class GPRInterpolator :
+        # TODO I think there are cases where we don't do the normalization by yfid
+        #      (because it's not possible or something)
 
-    def __init__ (self, gpr, y_avg) :
-        self.gpr = gpr
-        self.y_avg = y_avg
+        self.xfid = data.get_cosmo('fiducial')
+        x = self._norm_x(data.get_cosmo('cosmo_varied'))
+
+        self.yfid = reduction(data.get_datavec('fiducial'), axis=0)
+        y = reduction(data.get_datavec('cosmo_varied'), axis=1) / self.yfid[None, ...] - 1
+
+        if test_idx is not None :
+            x = np.delete(x, test_idx, axis=0)
+            y = np.delete(y, test_idx, axis=0)
+
+        self.gpr = GaussianProcessRegressor(kernel=kernels.RBF(length_scale=1, length_scale_bounds='fixed'))\
+                        .fit(x, y)
+
 
     def __call__ (self, x) :
-        ypred = self.gpr.predict(_construct_gpr_input(x.reshape(-1, 2)))
-        if self.y_avg is not None :
-            ypred = (1 + ypred) * self.y_avg
-        return ypred
+        y = self.gpr.predict(self._norm_x(x.reshape(-1, 2)))
+        if self.yfid is not None :
+            y = (1 + y) * self.yfid
+        return y
 
 
-def get_gpr (test_idx=None, reduction=np.mean, A=None, x=None) :
-    """ main routine of this module
-    
-    test_idx  ... exclude this cosmology from training set (for performance testing)
-    reduction ... how the random seeds are collapsed. Usually we use mean for the theory
-                  predicted signal, but can use other reductions (used in cov)
-    A         ... matrix used to linearly transform the data
-    x         ... do the gpr for a completely different target, needs to be of shape
-                  [NCOS, NDIMS, ]
-                  (in which case neither reduction nor A are being used)
-    """
-
-    theta = get_cosmo_theta()
-    if x is None :
-        yfid = get_fiducial()
-        y = get_cosmo_varied()
-        if A is not None :
-            yfid = np.einsum('ab,ib->ia', A, yfid)
-            y = np.einsum('ab,ijb->ija', A, y)
-        y_avg = reduction(yfid, axis=0)
-    else :
-        y = x
-        y_avg = None
-
-    if test_idx is not None :
-        theta = np.delete(theta, test_idx, axis=0)
-        y = np.delete(y, test_idx, axis=0)
-
-    if x is None :
-        y = reduction(y, axis=1)
-        y = y / y_avg[None, ...] - 1
-
-    theta_norm = _construct_gpr_input(theta)
-    gpr = GPR(kernel=kernels.RBF(length_scale=1, length_scale_bounds='fixed'))\
-            .fit(theta_norm, y)
-
-    return GPRInterpolator(gpr, y_avg)
+    def _norm_x (self, x) :
+        return x - self.xfid[None, :]
