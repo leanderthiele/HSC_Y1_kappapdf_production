@@ -195,3 +195,19 @@ class DataWrapper :
         # NOTE that getattr is only called after other paths have been exhausted
         assert name.startswith('get')
         return getattr(self.data, name)
+
+class DataPart (DataWrapper) :
+    """ small helper that only picks out part of the data vector """
+
+    def __init__ (self, data, stat) :
+        super().__init__(data)
+        assert stat in data.get_used_stats()
+        self.stat = stat
+
+    def get_datavec (self, case) :
+        return self.data._get_data_array(self.stat, case)
+
+    def get_stat_mask (self, stat) :
+        return np.full(self.data.NDIMS[self.stat], stat==self.stat, dtype=bool)
+
+

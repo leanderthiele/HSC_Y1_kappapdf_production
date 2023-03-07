@@ -1,23 +1,8 @@
 import numpy as np
 
-from data import Data, DataWrapper
+from data import Data, DataWrapper, DataPart
 from gpr import GPR
 from settings import S
-
-
-class DataPart (DataWrapper) :
-    """ small helper that only picks out part of the data vector """
-
-    def __init__ (self, data, stat) :
-        super().__init__(data)
-        assert stat in data.get_used_stats()
-        self.stat = stat
-
-    def get_datavec (self, case) :
-        return self.data._get_data_array(self.stat, case)
-
-    def get_stat_mask (self, stat) :
-        return np.full(self.data.NDIMS[self.stat], stat==self.stat, dtype=bool)
 
 
 class CompressedData (DataWrapper) :
@@ -48,6 +33,8 @@ class CompressedData (DataWrapper) :
 
 
     def get_stat_mask (self, stat) :
+        if S['moped']['apply_to'] == 'joint' :
+            return np.full(self.parts[0][1].shape[0], stat=='joint', dtype=bool)
         out = []
         for p in self.parts :
             m = p[0].get_stat_mask(stat)
@@ -57,6 +44,12 @@ class CompressedData (DataWrapper) :
                 assert np.all(m[0] == m)
                 out.append(np.full(p[1].shape[0], m[0], dtype=bool))
         return np.concatenate(out)
+
+
+    def get_used_stats (self) :
+        if S['moped']['apply_to'] == 'joint' :
+            return ['joint', ]
+        return self.data.get_used_stats()
 
 
     def _compression_weights (self, data) :
