@@ -31,6 +31,8 @@ class Cov :
                            stat: {'mode': S[stat]['cov_mode'], 'data': DataPart(data, stat), }
                            for stat in self.used_stats
                           }
+        for c in self.cov_blocks.values() :
+            self._prepare_cov_block(c)
 
         # correlation matrices between different statistics
         self.corr_blocks = self._corr_blocks()
@@ -39,7 +41,7 @@ class Cov :
     def cov (self, theta) :
         if self.all_fixed :
             return self.fid_cov
-        diag_cov_blocks = {c['stat']: self._eval_cov_block(c, theta) for c in self.cov_blocks}
+        diag_cov_blocks = {stat: self._eval_cov_block(c, theta) for stat, c in self.cov_blocks.items()}
         cov_blocks = []
         for stat1, cov1 in diag_cov_blocks.items() :
             cov_blocks.append([])
@@ -64,8 +66,8 @@ class Cov :
             for stat2, v2 in self.cov_blocks.items() :
                 if stat1 == stat2 :
                     continue
-                x1 = v1.get_datavec('fiducial')
-                x2 = v2.get_datavec('fiducial')
+                x1 = v1['data'].get_datavec('fiducial')
+                x2 = v2['data'].get_datavec('fiducial')
                 corr = np.corrcoef(x1, x2, rowvar=False)
                 out[f'{stat1}_{stat2}'] = corr[:x1.shape[-1], :][:, x1.shape[-1]:]
         return out
@@ -103,16 +105,27 @@ class Cov :
     def _eval_cov_block (self, cov_block, theta) :
 
         if (mode := cov_block['mode']) == 'fixed' :
-            return cov_block['cov']
+            out = cov_block['cov']
         elif mode == 'scale' :
             # this is quite hacky, but it seems to be better to keep Omega_matter fixed in this evaluation
             sigma = cov_block['sigma_gpr'](np.array([theta[0], cov_block['data'].get_cosmo('fiducial')[1]]))
             scaling = sigma / cov_block['sigma_fid']
-            return cov_block['cov'] * (scaling[:, None] * scaling[None, :])
+            out = cov_block['cov'] * (scaling[:, None] * scaling[None, :])
         elif mode == 'gpr' :
             cinv = cov_block['cinv_gpr'](theta)
             d = int(np.round(np.sqrt(len(cinv))))
             c = np.linalg.inv(cinv.reshape(d, d))
-            return 0.5 * (c + c.T) # make sure symmetrical, probably not necessary
+            out = 0.5 * (c + c.T) # make sure symmetrical, probably not necessary
         else :
             raise NotImplementedError(mode)
+        print(out)
+        return out
+
+
+# TESTING
+if __name__ == '__main__' :
+    from compressed_data import CompressedData
+    cd = CompressedData()
+    cov = Cov(cd)
+#    print(cov.fid_covinv)
+#    print(cov.covinv(np.array([0.8, 0.3])))

@@ -193,7 +193,6 @@ class DataWrapper :
 
     def __getattr__ (self, name) :
         # NOTE that getattr is only called after other paths have been exhausted
-        assert name.startswith('get')
         return getattr(self.data, name)
 
 class DataPart (DataWrapper) :
