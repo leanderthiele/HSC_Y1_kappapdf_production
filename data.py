@@ -58,9 +58,9 @@ class Data :
                     )()
     DELETE_BINS = (lambda n=NBINS_ALL, u=USE_STATS :
                   {
-                   stat: set(range(S[stat]['high_cut'])) \
-                         | set(range(n[stat] - S[stat]['low_cut'], n[stat])) \
-                         | {S[stat]['delete'], } if stat=='pdf' else set()
+                   stat: set(range(S[stat]['low_cut'])) \
+                         | set(range(n[stat] - S[stat]['high_cut'], n[stat])) \
+                         | ( {S[stat]['delete'], } if stat=='pdf' else set() )
                    for stat in u
                   }
                   )()

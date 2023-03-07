@@ -9,9 +9,6 @@
 # 7 -- 25 arcmin
 
 S = {
-     # source redshift bins, 0 is single-z
-     'zs': [0, 1, 2, 3, 4, ],
-
      # pdf settings, if not included we do not use pdf
      'pdf': {
              'unitstd': True,
