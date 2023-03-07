@@ -36,6 +36,9 @@ S = {
                'apply_to': ['pdf', ], # list means separate and then concatenated,
                                       # 'joint' would mean on joint data vector
               }
+     
+     # whether we apply some relatively heuristic scaling to the covariance matrix
+     'scale_cov': True
     }
 
 import hashlib

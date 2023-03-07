@@ -46,7 +46,23 @@ class Data :
               'gama15h': 23.73,
              }
     TOT_AREA = sum(FIELDS.values())
+
+    # some small computations
     USE_STATS = list(filter(lambda s: s in S, ['pdf', 'ps', ]))
+    DELETE_SMOOTH = {
+                     stat: set(range(Data.NSMOOTH_ALL)) - ( set(S[stat]['smooth']) if stat=='pdf' else {0, } )
+                     for stat in USE_STATS
+                    }
+    DELETE_BINS = {
+                   stat: set(range(S[stat]['high_cut'])) \
+                         | set(range(Data.NBINS_ALL[stat] - S[stat]['low_cut'], Data.NBINS_ALL[stat])) \
+                         | {S[stat]['delete'], } if stat=='pdf' else set()
+                   for stat in USE_STATS
+                  }
+    NDIMS = {
+             stat: NZS * (NSMOOTH_ALL - len(DELETE_SMOOTH[stat])) * (NBINS_ALL - len(DELETE_BINS[stat]))
+             for stat in USE_STATS
+            }
 
     # avoid repeated disk-IO by having evaluated results in this cache
     _CACHE = {}
@@ -79,6 +95,11 @@ class Data :
         return self.USE_STATS.copy()
 
 
+    def get_stat_mask (self, stat) :
+        """ return boolean mask that is True where this stat lives """
+        return np.concatenate([np.full(NDIMS[s], s==stat, dtype=bool) for s in Data.USE_STATS])
+
+
     def _get_data_array (self, *args) :
         """ wrapper around _stack_data which implements caching """
         key = '_'.join(args)
@@ -96,10 +117,6 @@ class Data :
         else :
             out = self._stack_data_helper(stat, case)
         # cuts
-        delete_smooth = set(range(Data.NSMOOTH_ALL)) - ( set(S[stat]['smooth']) if stat=='pdf' else {0, } )
-        delete_bins = set(range(S[stat]['high_cut'])) \
-                      | set(range(Data.NBINS_ALL[stat] - S[stat]['low_cut'], Data.NBINS_ALL[stat])) \
-                      | {S[stat]['delete'], } if stat=='pdf' else set()
         out = np.delete(out, tuple(delete_smooth), axis=-2)
         out = np.delete(out, tuple(delete_bins), axis=-1)
         # transformations

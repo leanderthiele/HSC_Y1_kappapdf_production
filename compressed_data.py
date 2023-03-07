@@ -16,6 +16,9 @@ class DataPart (DataWrapper) :
     def get_datavec (self, case) :
         return self.data._get_data_array(self.stat, case)
 
+    def get_stat_mask (self, stat) :
+        return np.full(self.data.NDIMS[self.stat], stat==self.stat, dtype=bool)
+
 
 class CompressedData (DataWrapper) :
     """ implement same public interface as Data """
@@ -42,6 +45,18 @@ class CompressedData (DataWrapper) :
                                for p in self.parts
                               ],
                               axis=-1)
+
+
+    def get_stat_mask (self, stat) :
+        out = []
+        for p in self.parts :
+            m = p[0].get_stat_mask(stat)
+            if p[1] is None :
+                out.append(m)
+            else :
+                assert np.all(m[0] == m)
+                out.append(np.full(p[1].shape[0], m[0], dtype=bool))
+        return np.concatenate(out)
 
 
     def _compression_weights (self, data) :
