@@ -47,6 +47,10 @@ class Data :
     def __init__ (self) :
         pass
     
+    
+    def get_datavec (self, case) :
+        """ only public method of this class """
+        return np.concatenate([self._get_data_array(stat, case) for stat in Data.USE_STATS], axis=-1)
 
     def _get_data_array (self, *args) :
         """ wrapper around _stack_data which implements caching """
@@ -88,7 +92,7 @@ class Data :
         output = [seed, zs, smooth, nbins]
         does not perform cutting
         """
-        out = np.zeros((Data.NSEEDS[case], Data.NZS, Data.NSMOOTH_ALL, Data.NBINS_ALL))
+        out = np.zeros((Data.NSEEDS[case], Data.NZS, Data.NSMOOTH_ALL, Data.NBINS_ALL[stat]))
         for ii, zs_idx in enumerate(S['zs']) :
             for field, area in Data.FIELDS.items() :
                 f = np.load(self._fname(stat, case, zs_idx, field, model))
