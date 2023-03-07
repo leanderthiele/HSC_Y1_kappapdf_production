@@ -73,12 +73,16 @@ class Data :
             return Data.FID_THETA
 
 
+    def get_used_stats (self) :
+        return self.USE_STATS
+
+
     def _get_data_array (self, *args) :
         """ wrapper around _stack_data which implements caching """
         key = '_'.join(args)
         if key not in Data._CACHE :
             Data._CACHE[key] = self._stack_data(*args)
-        return Data._CACHE[key]
+        return Data._CACHE[key].copy() # for some extra safety, probably not required but really cannot hurt
 
 
     def _stack_data (self, stat, case) :
@@ -150,3 +154,17 @@ class Data :
             out = f'{out}_stdmap'
         out = f'{out}.npy'
         return out
+
+
+
+class DataWrapper :
+    """ other classes implementing the same interface as Data can subclass this
+    It checks if a method has been overwritten and if not uses the original one
+    """
+
+    def __init__ (self, data) :
+        self.data = data
+
+    def __getattr__ (self, name) :
+        # NOTE that getattr is only called after other paths have been exhausted
+        return getattr(self.data, name)

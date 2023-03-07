@@ -34,7 +34,7 @@ S = {
      'moped': {
                'deriv_mode': 'lstsq_8', # either lstsq_N or gpr, should be about equivalent
                'apply_to': ['pdf', ], # list means separate and then concatenated,
-                                      # 'pdf+ps' would mean on joint data vector
+                                      # 'joint' would mean on joint data vector
               }
     }
 
