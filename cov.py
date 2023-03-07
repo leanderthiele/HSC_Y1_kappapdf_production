@@ -138,8 +138,8 @@ if __name__ == '__main__' :
     from compressed_data import CompressedData
     cd = CompressedData()
     cov = Cov(cd)
-    # theta = np.array([0.82 * np.sqrt(0.279 / 0.3), 0.279])
-    theta = np.array([0.7, 0.4])
+    theta = np.array([0.82 * np.sqrt(0.279 / 0.3), 0.279])
+    # theta = np.array([0.7, 0.4])
     cinv = cov.covinv(theta)
     with np.printoptions(precision=2, suppress=True, threshold=10000000, linewidth=200) :
         print(cov.fid_covinv)
