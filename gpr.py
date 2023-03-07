@@ -16,6 +16,7 @@ class GPR :
 
         # TODO I think there are cases where we don't do the normalization by yfid
         #      (because it's not possible or something)
+        #      Could be for covariance matrix
 
         self.xfid = data.get_cosmo('fiducial')
         x = self._norm_x(data.get_cosmo('cosmo_varied'))
@@ -32,7 +33,8 @@ class GPR :
 
 
     def __call__ (self, x) :
-        y = self.gpr.predict(self._norm_x(x.reshape(-1, 2)))
+        x = self._norm_x(x.reshape(-1, 2))
+        y = self.gpr.predict(x).squeeze()
         if self.yfid is not None :
             y = (1 + y) * self.yfid
         return y

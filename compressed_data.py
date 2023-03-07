@@ -37,7 +37,7 @@ class CompressedData (DataWrapper) :
 
     def get_datavec (self, case) :
         return np.concatenate([
-                               np.einsum('ab, ...b->a', p[1], p[0].get_datavec(case)) if p[1] is not None \
+                               np.einsum('ab, ...b->...a', p[1], p[0].get_datavec(case)) if p[1] is not None \
                                else p[0].get_datavec(case) \
                                for p in self.parts
                               ],
@@ -86,5 +86,19 @@ class CompressedData (DataWrapper) :
             mu_hi = gpr(t)
             t[ii] -= 2*delta
             mu_lo = gpr(t)
-            out.append( (mu_hi-mu_lo)/(2*delta) )
+            dmdt = (mu_hi-mu_lo)/(2*delta)
+            out.append(dmdt)
         return out
+
+
+# TESTING
+if __name__ == '__main__' :
+    
+    cd = CompressedData()
+
+    a = cd.get_datavec('fiducial')
+    print(a.shape)
+    b = cd.get_datavec('cosmo_varied')
+    print(b.shape)
+
+    print(np.cov(a, rowvar=False))

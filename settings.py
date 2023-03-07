@@ -24,15 +24,15 @@ S = {
             },
      
      # power spectrum settings, if not included we do not use power spectrum
-     'ps': {
-            'rebin': 1,
-            'low_cut': 4,
-            'high_cut': 6,
-           },
+     # 'ps': {
+     #        'rebin': 1,
+     #        'low_cut': 4,
+     #        'high_cut': 6,
+     #       },
      
      # moped settings
      'moped': {
-               'deriv_mode': 'lstsq_8', # either lstsq_N or gpr, should be about equivalent
+               'deriv_mode': 'gpr', # either lstsq_N or gpr, should be about equivalent
                'apply_to': ['pdf', ], # list means separate and then concatenated,
                                       # 'joint' would mean on joint data vector
               }

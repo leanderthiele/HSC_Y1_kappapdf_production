@@ -57,7 +57,8 @@ class Data :
     
     def get_datavec (self, case) :
         """ main public method of this class """
-        return np.concatenate([self._get_data_array(stat, case) for stat in Data.USE_STATS], axis=-1)
+        return np.concatenate([self._get_data_array(stat, case) for stat in Data.USE_STATS],
+                              axis=-1)
 
     
     def get_cosmo (self, case) :
@@ -66,7 +67,8 @@ class Data :
         in the order S8, Om
         """
         if case == 'cosmo_varied' :
-            _, Om, s8 = np.loadtxt(f'{Data.ROOT}/stats_cosmo_varied/omegam_sigma8_design3.dat')
+            _, Om, s8 = np.loadtxt(f'{Data.ROOT}/stats_cosmo_varied/omegam_sigma8_design3.dat',
+                                   unpack=True)
             S8 = s8 * np.sqrt(Om / 0.3)
             return np.stack([S8, Om, ], axis=-1)
         else :
@@ -167,4 +169,5 @@ class DataWrapper :
 
     def __getattr__ (self, name) :
         # NOTE that getattr is only called after other paths have been exhausted
+        assert name.startswith('get')
         return getattr(self.data, name)
