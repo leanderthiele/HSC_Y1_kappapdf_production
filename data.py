@@ -78,8 +78,10 @@ class Data :
         pass
     
     
-    def get_datavec (self, case) :
+    def get_datavec (self, case, stat=None) :
         """ main public method of this class """
+        if stat is not None :
+            return self._get_data_array(stat, case)
         return np.concatenate([self._get_data_array(stat, case) for stat in Data.USE_STATS],
                               axis=-1)
 
@@ -193,6 +195,7 @@ class DataWrapper :
 
     def __getattr__ (self, name) :
         # NOTE that getattr is only called after other paths have been exhausted
+        assert name.startswith('get')
         return getattr(self.data, name)
 
 class DataPart (DataWrapper) :
@@ -204,7 +207,7 @@ class DataPart (DataWrapper) :
         self.stat = stat
 
     def get_datavec (self, case) :
-        return self.data._get_data_array(self.stat, case)
+        return self.data.get_datavec(case, stat=self.stat)
 
     def get_stat_mask (self, stat) :
         return np.full(self.data.NDIMS[self.stat], stat==self.stat, dtype=bool)

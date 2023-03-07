@@ -23,13 +23,18 @@ class CompressedData (DataWrapper) :
                          ]
 
 
-    def get_datavec (self, case) :
-        return np.concatenate([
-                               np.einsum('ab, ...b->...a', p[1], p[0].get_datavec(case)) if p[1] is not None \
-                               else p[0].get_datavec(case) \
-                               for p in self.parts
-                              ],
-                              axis=-1)
+    def get_datavec (self, case, stat=None) :
+        if stat is not None :
+            if S['moped']['apply_to'] == 'joint' :
+                assert stat == 'joint'
+                # and then fall though, since it'll work
+            else :
+                for p in self.parts :
+                    if p[0].stat == stat :
+                        return self._eval_compression(p)
+                raise RuntimeError(stat)
+                
+        return np.concatenate([self._eval_compression(p) for p in self.parts ], axis=-1)
 
 
     def get_stat_mask (self, stat) :
@@ -65,6 +70,11 @@ class CompressedData (DataWrapper) :
         b2 = ( np.einsum('ab,b->a', Cinv, dmdt[1]) - np.einsum('a,a->', dmdt[1], b1) * b1 ) \
              / np.sqrt( np.einsum('a,ab,b->', dmdt[1], Cinv, dmdt[1]) - np.einsum('a,a->', dmdt[1], b1)**2 )
         return np.stack([b1, b2], axis=0)
+
+
+    def _eval_compression (self, part) :
+        return np.einsum('ab, ...b->...a', part[1], part[0].get_datavec(case)) if part[1] is not None \
+               else part[0].get_datavec(case)
 
 
     def _derivatives (self, data) :
