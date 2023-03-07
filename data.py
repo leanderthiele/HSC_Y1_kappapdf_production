@@ -47,22 +47,29 @@ class Data :
     TOT_AREA = sum(FIELDS.values())
 
     # some small computations
+    # python has some weird scoping rules, that's why we need these lambda work-arounds
     USE_STATS = list(filter(lambda s: s in S, ['pdf', 'ps', ]))
     NZS = { stat: len(S[stat]['zs']) for stat in USE_STATS }
-    DELETE_SMOOTH = {
-                     stat: set(range(NSMOOTH_ALL)) - ( set(S[stat]['smooth']) if stat=='pdf' else {0, } )
-                     for stat in USE_STATS
+    DELETE_SMOOTH = (lambda n=NSMOOTH_ALL,u=USE_STATS :
+                    {
+                     stat: set(range(n)) - ( set(S[stat]['smooth']) if stat=='pdf' else {0, } )
+                     for stat in u
                     }
-    DELETE_BINS = {
+                    )()
+    DELETE_BINS = (lambda n=NBINS_ALL, u=USE_STATS :
+                  {
                    stat: set(range(S[stat]['high_cut'])) \
-                         | set(range(NBINS_ALL[stat] - S[stat]['low_cut'], NBINS_ALL[stat])) \
+                         | set(range(n[stat] - S[stat]['low_cut'], n[stat])) \
                          | {S[stat]['delete'], } if stat=='pdf' else set()
-                   for stat in USE_STATS
+                   for stat in u
                   }
-    NDIMS = {
-             stat: NZS[stat] * (NSMOOTH_ALL - len(DELETE_SMOOTH[stat])) * (NBINS_ALL - len(DELETE_BINS[stat]))
-             for stat in USE_STATS
+                  )()
+    NDIMS = (lambda nzs=NZS, n=NSMOOTH_ALL, ds=DELETE_SMOOTH, nba=NBINS_ALL, db=DELETE_BINS, u=USE_STATS :
+            {
+             stat: nzs[stat] * (n - len(ds[stat])) * (nba[stat] - len(db[stat]))
+             for stat in u
             }
+            )()
 
     # avoid repeated disk-IO by having evaluated results in this cache
     _CACHE = {}
