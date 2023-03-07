@@ -9,10 +9,11 @@
 # 7 -- 25 arcmin
 
 # The cov_mode setting works as follows:
-# fixed ... block is kept fixed at the fiducial point
-# gpr   ... block's inverse is emulated
-# scale ... block's corr is kept fixed at fiducial point
-#           but scaling with sigma (from emulator) is performed
+# fixed     ... block is kept fixed at the fiducial point
+# gpr       ... block's inverse is emulated
+# gpr_scale ... same as gpr but scale s.t. agrees at fiducial point
+# scale     ... block's corr is kept fixed at fiducial point
+#               but scaling with sigma (from emulator) is performed
 # In all cases, we keep the cross-correlations between different
 # summary statistics fixed at their values at the fiducial point.
 
