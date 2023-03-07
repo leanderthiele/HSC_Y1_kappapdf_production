@@ -31,10 +31,10 @@ class CompressedData (DataWrapper) :
             else :
                 for p in self.parts :
                     if p[0].stat == stat :
-                        return self._eval_compression(p)
+                        return self._eval_compression(p, case)
                 raise RuntimeError(stat)
                 
-        return np.concatenate([self._eval_compression(p) for p in self.parts ], axis=-1)
+        return np.concatenate([self._eval_compression(p, case) for p in self.parts ], axis=-1)
 
 
     def get_stat_mask (self, stat) :
@@ -72,7 +72,7 @@ class CompressedData (DataWrapper) :
         return np.stack([b1, b2], axis=0)
 
 
-    def _eval_compression (self, part) :
+    def _eval_compression (self, part, case) :
         return np.einsum('ab, ...b->...a', part[1], part[0].get_datavec(case)) if part[1] is not None \
                else part[0].get_datavec(case)
 

@@ -118,7 +118,6 @@ class Cov :
             out = 0.5 * (c + c.T) # make sure symmetrical, probably not necessary
         else :
             raise NotImplementedError(mode)
-        print(out)
         return out
 
 
@@ -127,5 +126,7 @@ if __name__ == '__main__' :
     from compressed_data import CompressedData
     cd = CompressedData()
     cov = Cov(cd)
-#    print(cov.fid_covinv)
-#    print(cov.covinv(np.array([0.8, 0.3])))
+    cinv = cov.covinv(np.array([0.9, 0.3]))
+    with np.printoptions(precision=2, suppress=True, threshold=10000000, linewidth=200) :
+        print(cov.fid_covinv)
+        print(cinv)
