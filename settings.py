@@ -28,7 +28,7 @@ S = {
              'low_cut': 3,
              'high_cut': 0,
              'delete': 9, # delete one bin to prevent ill-conditioned covariance from sum constraint
-             'cov_mode': 'gpr_scale',
+             'cov_mode': 'gpr',
             },
      
      # power spectrum settings, if not included we do not use power spectrum
@@ -37,7 +37,7 @@ S = {
             'zs': [0, ],
             'low_cut': 4,
             'high_cut': 6,
-            'cov_mode': 'fixed',
+            'cov_mode': 'scale',
            },
 
      # this is a bit ugly but who cares (special case when MOPED in joint mode)

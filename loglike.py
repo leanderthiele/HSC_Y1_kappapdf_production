@@ -1,5 +1,7 @@
 import numpy as np
 
+from tqdm import tqdm
+
 from data import Data
 from compressed_data import CompressedData
 from cov import Cov
@@ -72,7 +74,7 @@ if __name__ == '__main__' :
 
     # first get chi-squared values at fiducial point
     fid_chisq = []
-    for ii in range(Data.NSEEDS['fiducial']) :
+    for ii in tqdm(range(Data.NSEEDS['fiducial'])) :
         ll = LogLike('fiducial', ii)
         fid_chisq.append(chisq(ll))
     fid_chisq = np.array(fid_chisq)
@@ -83,7 +85,7 @@ if __name__ == '__main__' :
     # now at cosmo_varied points
     cosmo_varied_chisq, theta = [], []
 
-    for ii in range(Data.NCOS) :
+    for ii in tqdm(range(Data.NCOS)) :
         this_cosmo_chisq = []
         for jj in range(Data.NSEEDS['cosmo_varied']) :
             ll = LogLike('cosmo_varied', ii*Data.NSEEDS['cosmo_varied']+jj)
@@ -104,7 +106,7 @@ if __name__ == '__main__' :
                                                [fid_chisq, cosmo_varied_chisq.flatten(), ],
                                                ['fiducial', 'cosmo_varied', ])) :
         _, e, _ = a.hist(chisq, bins=50, density=True, histtype='step', range=(0, 5*dof),
-                         label=f'simuulations {label}')
+                         label=f'simulations {label}')
         dist = chi2(dof)
         expected = (dist.cdf(e[1:]) - dist.cdf(e[:-1])) / (e[1:]-e[:-1])
         c = 0.5 * (e[1:] + e[:-1])
