@@ -83,7 +83,10 @@ class Cov :
         cinv = np.array([np.linalg.inv(np.cov(_x1, rowvar=False)) for _x1 in x1])
         # now reshape this back into required form (flattening the matrix into final dimension)
         cinv = cinv.reshape(*x.shape[:axis], -1)
-        return cinv
+        # Hartlap factor is maybe important here
+        n = x.shape[axis]
+        p = x.shape[-1]
+        return cinv * (n-p-2)/(n-1)
     
 
     def _prepare_cov_block (self, cov_block) :
@@ -126,7 +129,9 @@ if __name__ == '__main__' :
     from compressed_data import CompressedData
     cd = CompressedData()
     cov = Cov(cd)
-    cinv = cov.covinv(np.array([0.9, 0.3]))
+    # theta = np.array([0.82 * np.sqrt(0.279 / 0.3), 0.279])
+    theta = np.array([0.7, 0.4])
+    cinv = cov.covinv(theta)
     with np.printoptions(precision=2, suppress=True, threshold=10000000, linewidth=200) :
         print(cov.fid_covinv)
         print(cinv)
