@@ -29,4 +29,14 @@ S = {
             'low_cut': 4,
             'high_cut': 6,
            },
+     
+     # moped settings
+     'moped': {
+               'deriv_mode': 'lstsq_8', # either lstsq_N or gpr, should be about equivalent
+               'apply_to': ['pdf', ], # list means separate and then concatenated,
+                                      # 'pdf+ps' would mean on joint data vector
+              }
     }
+
+import hashlib
+IDENT = hashlib.md5(f'{S}'.encode('utf-8')).hexdigest()

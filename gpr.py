@@ -7,7 +7,7 @@ from data import get_fiducial, get_cosmo_varied, get_cosmo_theta, FID
 
 
 def _construct_gpr_input (xcosmo) :
-    return xcosmo - np.array(FID.values())[None, :]
+    return xcosmo - np.array(list(FID.values()))[None, :]
 
 
 class GPRInterpolator :
