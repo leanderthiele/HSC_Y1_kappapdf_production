@@ -28,8 +28,9 @@ class GPR :
             x = np.delete(x, test_idx, axis=0)
             y = np.delete(y, test_idx, axis=0)
 
-        self.gpr = GaussianProcessRegressor(kernel=kernels.RBF(length_scale=1, length_scale_bounds='fixed'))\
-                        .fit(x, y)
+        # make sure we get reproducible results by setting the seed!
+        self.gpr = GaussianProcessRegressor(kernel=kernels.RBF(length_scale=1, length_scale_bounds='fixed'),
+                                            random_state=137).fit(x, y)
 
 
     def __call__ (self, x) :
@@ -41,4 +42,5 @@ class GPR :
 
 
     def _norm_x (self, x) :
+        """ center the inputs """
         return x - self.xfid[None, :]

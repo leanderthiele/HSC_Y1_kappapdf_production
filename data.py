@@ -72,11 +72,11 @@ class Data :
             S8 = s8 * np.sqrt(Om / 0.3)
             return np.stack([S8, Om, ], axis=-1)
         else :
-            return Data.FID_THETA
+            return Data.FID_THETA.copy()
 
 
     def get_used_stats (self) :
-        return self.USE_STATS
+        return self.USE_STATS.copy()
 
 
     def _get_data_array (self, *args) :
