@@ -3,7 +3,6 @@ We always sample S8, Om
 """
 
 import sys
-import os
 
 import numpy as np
 from scipy.optimize import minimize
@@ -107,9 +106,5 @@ def Sample (obs_case, obs_idx) :
 
     print(f'autocorr times:\n{autocorr_times}\nacceptance rates:\n{acceptance_rates}')
 
-    wrkdir = f'/scratch/gpfs/lthiele/HSC_Y1_chains/{obs_case}_{IDENT}'
-    os.makedirs(wrkdir, exist_ok=True)
-    fname = f'{wrkdir}/chain_{obs_idx}.npz'
-    np.savez(fname,
-             chain=chain, autocorr_times=autocorr_times, acceptance_rates=acceptance_rates,
-             ml_theta=ml_theta, true_theta=ll.theta_real)
+    return dict(chain=chain, autocorr_times=autocorr_times, acceptance_rates=acceptance_rates,
+                ml_theta=ml_theta, true_theta=ll.theta_real)
