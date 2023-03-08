@@ -62,6 +62,22 @@ S = {
                'apply_to': ['pdf', ], # list means separate and then concatenated,
                                       # 'joint' would mean on joint data vector
               },
+     
+     # sampling settings, autocorrelation time around 20 so it is fine
+     'mcmc': {
+              'nwalkers': 128,
+              'nsteps': 2000,
+              'discard': 200,
+              'thin': 20,
+             },
+
+     # can switch s8 and S8 here to change the prior
+     # ordering is important here!!!
+     'prior': {
+               'S8': (0.45, 1.05),
+               # 's8': (0.60, 1.10),
+               'Om': (0.20, 0.40),
+              },
     }
 
 import hashlib
