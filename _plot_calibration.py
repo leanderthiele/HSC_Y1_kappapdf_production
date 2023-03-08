@@ -11,6 +11,7 @@ ROOT = '/scratch/gpfs/lthiele/hsc_chains'
 runs = {
         'befab23d6ee10fe971a5ad7118957c9c': 'baseline PDF only',
         '3e14c0d1a34c1aa19ab78949396014de': 'cov_mode=gpr_scale',
+        '45b6a5961cb86a0e7690fc6919c9bf8e': 'cov_mode=fixed',
        }
 
 # can play with the binning here
