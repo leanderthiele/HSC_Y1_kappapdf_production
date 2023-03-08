@@ -1,5 +1,7 @@
 import numpy as np
 
+from sklearn.linear_model import LinearRegression
+
 from data import Data, DataWrapper, DataPart
 from gpr import GPR
 from settings import S
@@ -7,6 +9,11 @@ from settings import S
 
 class CompressedData (DataWrapper) :
     """ implement same public interface as Data """
+
+    # use this covariance matrix to define a "close" region for the lstsq derivatives
+    # this is not very rigorous but by eye it looks ok
+    COV_LSTSQ = [[0.05**2,       0, ],
+                 [0      , 0.10**2, ], ]
 
 
     def __init__ (self) :
@@ -33,7 +40,6 @@ class CompressedData (DataWrapper) :
                     if p[0].stat == stat :
                         return self._eval_compression(p, case)
                 raise RuntimeError(stat)
-                
         return np.concatenate([self._eval_compression(p, case) for p in self.parts ], axis=-1)
 
 
@@ -88,8 +94,15 @@ class CompressedData (DataWrapper) :
     
     def _derivatives_lstsq (self, data, N) :
         """ estimate using linear regression, N is the number of points to use """
-        # TODO
-        raise NotImplementedError()
+
+        delta_theta = data.get_cosmo('cosmo_varied') - data.get_cosmo('fiducial')[None, :]
+        Cinv_lstsq = np.linalg.inv(np.array(CompressedData.COV_LSTSQ))
+        ds = np.einsum('ia,ab,ib->i', delta_theta, Cinv_lstsq, delta_theta)
+        select = np.argsort(ds)[:N]
+        delta_theta = delta_theta[select]
+        y = np.mean(data.get_datavec('cosmo_varied')[select], axis=1)
+        linear_model = LinearRegression(fit_intercept=True).fit(delta_theta, y)
+        return linear_model.coef_.T # shape [params, data]
 
 
     def _derivatives_gpr (self, data) :
@@ -106,7 +119,7 @@ class CompressedData (DataWrapper) :
             mu_lo = gpr(t)
             dmdt = (mu_hi-mu_lo)/(2*delta)
             out.append(dmdt)
-        return out
+        return np.array(out)
 
 
 # TESTING
