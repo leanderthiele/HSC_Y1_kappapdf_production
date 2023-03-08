@@ -61,10 +61,6 @@ class Workers :
         chain_fname = f'{WRKDIR}/chain_{idx}.npz'
         np.savez(chain_fname, **result)
 
-        if OBS_CASE == 'real' :
-            print(f'autocorr times:\n{result["autocorr_times"]}\n'\
-                  f'acceptance rates:\n{result["acceptance_rates"]}')
-
         if OBS_CASE == 'cosmo_varied' :
             chain = result['chain']
             true_theta = result['true_theta']
@@ -115,9 +111,13 @@ if __name__ == '__main__' :
 
     # some random number so different slurm jobs don't interfere
     rnd = rng.integers(2**63)
+
     coverage_fname = f'{WRKDIR}/coverage_data_{rnd}.dat'
+    info_fname = f'{WRKDIR}/settings_{rnd}.info'
     with open(coverage_fname, 'w') as f :
         f.write('# oneminusalpha, ranks...\n')
+    with open(info_fname, 'w') as f :
+        f.write(f'{S}')
 
     LOCK = mp.Lock()
     workers = Workers(coverage_fname)
