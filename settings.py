@@ -1,21 +1,33 @@
-# smoothing scales are
-# 0 --  1 arcmin
-# 1 --  2 arcmin
-# 2 --  5 arcmin
-# 3 --  7 arcmin
-# 4 --  8 arcmin
-# 5 -- 10 arcmin
-# 6 -- 15 arcmin
-# 7 -- 25 arcmin
+""" GLOBAL SETTINGS
 
-# The cov_mode setting works as follows:
-# fixed     ... block is kept fixed at the fiducial point
-# gpr       ... block's inverse is emulated
-# gpr_scale ... same as gpr but scale s.t. agrees at fiducial point
-# scale     ... block's corr is kept fixed at fiducial point
-#               but scaling with sigma (from emulator) is performed
-# In all cases, we keep the cross-correlations between different
-# summary statistics fixed at their values at the fiducial point.
+smoothing scales are
+0 --  1 arcmin
+1 --  2 arcmin
+2 --  5 arcmin
+3 --  7 arcmin
+4 --  8 arcmin
+5 -- 10 arcmin
+6 -- 15 arcmin
+7 -- 25 arcmin
+
+The cov_mode setting works as follows:
+fixed     ... block is kept fixed at the fiducial point
+gpr       ... block's inverse is emulated
+gpr_scale ... same as gpr but scale s.t. agrees at fiducial point
+scale     ... block's corr is kept fixed at fiducial point
+              but scaling with sigma (from emulator) is performed
+In all cases, we keep the cross-correlations between different
+summary statistics fixed at their values at the fiducial point.
+
+The deriv_mode in moped has two choices
+gpr     ... finite differencing using a Gaussian process emulator
+lstsq_N ... linear regression using N cosmo-varied points surrounding the fiducial point
+In tests, it appears that gpr output is very stable under changing the step size,
+wheres lstsq tends to disagree with gpr and also is more unstable under changing the number of points N
+(qualitatively gpr and lstsq are in agreement though).
+lstsq approaches the gpr result as N is increased to relatively large (~20)
+"""
+
 
 S = {
      # pdf settings, if not included we do not use pdf
@@ -32,13 +44,13 @@ S = {
             },
      
      # power spectrum settings, if not included we do not use power spectrum
-     'ps': {
-            'rebin': 1,
-            'zs': [0, ],
-            'low_cut': 4,
-            'high_cut': 6,
-            'cov_mode': 'scale',
-           },
+     #'ps': {
+     #       'rebin': 1,
+     #       'zs': [0, ],
+     #       'low_cut': 4,
+     #       'high_cut': 6,
+     #       'cov_mode': 'scale',
+     #      },
 
      # this is a bit ugly but who cares (special case when MOPED in joint mode)
      # probably never used...
@@ -46,7 +58,7 @@ S = {
      
      # moped settings
      'moped': {
-               'deriv_mode': 'gpr', # either lstsq_N or gpr, should be about equivalent
+               'deriv_mode': 'gpr', # either lstsq_N or gpr
                'apply_to': ['pdf', ], # list means separate and then concatenated,
                                       # 'joint' would mean on joint data vector
               },

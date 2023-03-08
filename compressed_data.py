@@ -71,6 +71,8 @@ class CompressedData (DataWrapper) :
 
         Cinv = np.linalg.inv(np.cov(data.get_datavec('fiducial'), rowvar=False))
         dmdt = self._derivatives(data)
+        # with np.printoptions(precision=2, suppress=True, threshold=10000000, linewidth=200) :
+        #     print(dmdt)
         b1 = np.einsum('ab,b->a', Cinv, dmdt[0]) \
              / np.sqrt(np.einsum('a,ab,b->', dmdt[0], Cinv, dmdt[0]))
         b2 = ( np.einsum('ab,b->a', Cinv, dmdt[1]) - np.einsum('a,a->', dmdt[1], b1) * b1 ) \
@@ -108,7 +110,9 @@ class CompressedData (DataWrapper) :
     def _derivatives_gpr (self, data) :
         """ estimate from Gaussian process emulator """
 
-        delta_theta = [0.05, 0.05] # TODO can play with this
+        # derivatives are remarkably stable under changes to this step size
+        # (varations ~10 % when scanning step size between 0.01 and 0.1)
+        delta_theta = [0.05, 0.05]
         gpr = GPR(data)
         out = []
         for ii, delta in enumerate(delta_theta) :
@@ -127,9 +131,9 @@ if __name__ == '__main__' :
     
     cd = CompressedData()
 
-    a = cd.get_datavec('fiducial')
-    print(a.shape)
-    b = cd.get_datavec('cosmo_varied')
-    print(b.shape)
+#    a = cd.get_datavec('fiducial')
+#    print(a.shape)
+#    b = cd.get_datavec('cosmo_varied')
+#    print(b.shape)
 
-    print(np.cov(a, rowvar=False))
+#    print(np.cov(a, rowvar=False))
