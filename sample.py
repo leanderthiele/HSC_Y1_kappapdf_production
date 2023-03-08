@@ -104,7 +104,5 @@ def Sample (obs_case, obs_idx) :
 
     acceptance_rates = sampler.acceptance_fraction
 
-    print(f'autocorr times:\n{autocorr_times}\nacceptance rates:\n{acceptance_rates}')
-
     return dict(chain=chain, autocorr_times=autocorr_times, acceptance_rates=acceptance_rates,
                 ml_theta=ml_theta, true_theta=ll.theta_real)
