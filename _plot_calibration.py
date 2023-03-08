@@ -32,10 +32,10 @@ for run_hash, run_info in runs.items() :
     oma = oma[oma>0]
     ranks = ranks[ranks>0]
 
-    coverage = np.array([np.count_nonzero(oma<e) for e in edges_qq]) / len(oma)
+    # coverage = np.array([np.count_nonzero(oma<e) for e in edges_qq]) / len(oma)
 
     label = f'$\\tt{{ {run_hash[:4]} }}$: {run_info}'
-    ax_qq.hist(coverage, bins=edges_qq, histtype='step', cumulative=True, density=True,
+    ax_qq.hist(oma, bins=edges_qq, histtype='step', cumulative=True, density=True,
                label=label)
     ax_ra.hist(ranks, bins=edges_ra, histtype='step', density=True,
                label=label)
