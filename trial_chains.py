@@ -117,7 +117,7 @@ if __name__ == '__main__' :
     with open(coverage_fname, 'w') as f :
         f.write('# oneminusalpha, ranks...\n')
     with open(info_fname, 'w') as f :
-        f.write(f'{S}')
+        f.write(f'{S}\n')
 
     LOCK = mp.Lock()
     workers = Workers(coverage_fname)

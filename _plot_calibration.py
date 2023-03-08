@@ -13,8 +13,9 @@ runs = {
        }
 
 # can play with the binning here
-Nbins = 50
-edges = np.linspace(0, 1, num=Nbins+1)
+Nbins_qq = 50
+Nbins_ra = 20
+edges_qq, edges_ra = [np.linspace(0, 1, num=Nbins+1) for Nbins in [Nbins_qq, Nbins_ra, ]]
 
 fig_qq, ax_qq = plt.subplots(figsize=(5, 5))
 fig_ra, ax_ra = plt.subplots(figsize=(5, 5))
@@ -29,11 +30,11 @@ for run_hash, run_info in runs.items() :
     oma = oma[oma>0]
     ranks = ranks[ranks>0]
 
-    coverage = np.array([np.count_nonzero(oma<e) for e in edges]) / len(oma)
+    coverage = np.array([np.count_nonzero(oma<e) for e in edges_qq]) / len(oma)
 
     label = run_hash[:4] if run_info is None else run_info
-    ax_qq.plot(edges, coverage, label=label)
-    ax_ra.hist(ranks, bins=edges, histtype='step', label=label)
+    ax_qq.plot(edges_qq, coverage, label=label)
+    ax_ra.hist(ranks, bins=edges_ra, histtype='step', label=label)
 
 ax_qq.axline((0, 0), slope=1, color='grey', linestyle='dashed')
 ax_qq.set_xlim(0, 1)
