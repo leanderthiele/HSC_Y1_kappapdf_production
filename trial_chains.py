@@ -22,7 +22,8 @@ def get_possible_sims () :
 
     data = Data()
     # for the fiducials, need to expand the leading unit axis
-    theta_sims = data.get_cosmo(OBS_CASE).reshape(-1, theta_sims.shape[-1])
+    theta_sims = data.get_cosmo(OBS_CASE)
+    theta_sims = theta_sims.reshape(-1, theta_sims.shape[-1])
 
     # compute their logpriors
     logprior_sims = np.array([logprior(t) for t in theta_sims])

@@ -2,7 +2,7 @@ import sys
 
 import numpy as np
 
-from scipy.optimize import minimize_scalar, root_scalar, dual_annealing, basinhopping
+from scipy.optimize import root_scalar, basinhopping
 from sklearn.neighbors import KernelDensity
 
 # LFT: copied this pretty much unchanged from nuvoid project
@@ -12,7 +12,7 @@ def Ranks (chain, true_theta) :
     make sure the chain is flattened!
     """
     ranks = np.sum(true_theta[None, :] > chain, axis=0, dtype=int)
-    return ranks ranks.astype(float) / len(chain)
+    return ranks.astype(float) / len(chain)
 
 
 def Oneminusalpha (samples, true_theta) :
