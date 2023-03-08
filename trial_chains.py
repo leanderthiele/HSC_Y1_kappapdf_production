@@ -61,6 +61,10 @@ class Workers :
         chain_fname = f'{WRKDIR}/chain_{idx}.npz'
         np.savez(chain_fname, **result)
 
+        if OBS_CASE == 'real' :
+            print(f'autocorr times:\n{result["autocorr_times"]}\n'\
+                  f'acceptance rates:\n{result["acceptance_rates"]}')
+
         if OBS_CASE == 'cosmo_varied' :
             chain = result['chain']
             true_theta = result['true_theta']

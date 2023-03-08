@@ -91,7 +91,7 @@ def Sample (obs_case, obs_idx) :
     assert all(np.isfinite(logprior(t)) for t in init_theta)
 
     # increase the stretch parameter from its default (2) to decrease acceptance rate and correlation time
-    sampler = emcee.EnsembleSampler(S['mcmc']['nwalkers'], 2, logprob, args=ll,
+    sampler = emcee.EnsembleSampler(S['mcmc']['nwalkers'], 2, logprob, args=(ll, ),
                                     moves=emcee.moves.StretchMove(a=5))
     sampler.run_mcmc(init_theta, S['mcmc']['nsteps'], progress=(obs_case=='real'))
 
