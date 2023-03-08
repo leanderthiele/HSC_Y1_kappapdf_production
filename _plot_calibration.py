@@ -34,8 +34,10 @@ for run_hash, run_info in runs.items() :
     coverage = np.array([np.count_nonzero(oma<e) for e in edges_qq]) / len(oma)
 
     label = f'$\\tt{{ {run_hash[:4]} }}$: {run_info}'
-    ax_qq.plot(edges_qq, coverage, label=label)
-    ax_ra.hist(ranks, bins=edges_ra, histtype='step', label=label)
+    ax_qq.hist(coverage, bins=edges_qq, histtype='step', cumulative=True, density=True,
+               label=label)
+    ax_ra.hist(ranks, bins=edges_ra, histtype='step', density=True,
+               label=label)
 
 ax_qq.axline((0, 0), slope=1, color='grey', linestyle='dashed')
 ax_qq.set_xlim(0, 1)
