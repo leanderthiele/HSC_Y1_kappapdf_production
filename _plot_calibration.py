@@ -32,7 +32,7 @@ for run_hash, run_info in runs.items() :
 
     coverage = np.array([np.count_nonzero(oma<e) for e in edges_qq]) / len(oma)
 
-    label = run_hash[:4] if run_info is None else run_info
+    label = f'$\\tt{{ {run_hash[:4]} }}$' if run_info is None else run_info
     ax_qq.plot(edges_qq, coverage, label=label)
     ax_ra.hist(ranks, bins=edges_ra, histtype='step', label=label)
 
