@@ -2,10 +2,13 @@ import sys
 from sys import argv
 import os
 
+import multiprocessing as mp
+
 import numpy as np
 
 from data import Data
 from sample import Sample, logprior
+from coverage_calcs import Oneminusalpha, Ranks
 from settings import S, IDENT
 
 OBS_CASE = argv[1]
@@ -40,17 +43,50 @@ def get_possible_sims () :
     return obs_indices, prior_sims
 
 
-def one_chain (idx) :
-    
-    fname = f'{WRKDIR}/chain_{idx}.npz'
+class Workers :
 
-    try :
-        result = Sample(OBS_CASE, idx)
-    except Exception as e :
-        print(f'***Failed for idx={idx}: {e}', file=sys.stderr)
-        return
+    def __init__ (self, lock, coverage_fname) :
+        self.lock = lock
+        self.coverage_fname = coverage_fname
 
-    np.savez(fname, **result)
+
+    def __call__ (self, idx) :
+        
+        try :
+            result = Sample(OBS_CASE, idx)
+        except Exception as e :
+            print(f'***Sample failed for idx={idx}: {e}', file=sys.stderr)
+            return
+
+        chain_fname = f'{WRKDIR}/chain_{idx}.npz'
+        np.savez(chain_fname, **result)
+
+        if OBS_CASE == 'cosmo_varied' :
+            chain = result['chain']
+            true_theta = result['true_theta']
+            try :
+                # doesn't make sense otherwise
+                oma = Oneminusalpha(chain[..., 0].flatten(), true_theta[0])
+            except Exception as e :
+                print(f'***Oneminusalpha failed for idx={idx}: {e}', file=sys.stderr)
+                oma = -1
+
+            try :
+                ranks = Ranks(chain.reshape(-1, chain.shape[-1]), true_theta)
+            except Exception as e :
+                print(f'***Ranks failed for idx={idx}: {e}', file=sys.stderr)
+                ranks = np.full(chain.shape[-1], -1)
+        
+        # make sure we don't mess up the output
+        self.lock.acquire()
+        try :
+            ranks_str = ' '.join(map(lambda s: f'{s:.8f}', ranks))
+            with open(self.coverage_fname, 'a') as f :
+                f.write(f'{oma:.8f} {ranks_str}\n')
+        except Exception as e :
+            print(f'***Writing coverage to file failed for idx={idx}: {e}', file=sys.stderr)
+        finally :
+            self.lock.release()
 
 
 if __name__ == '__main__' :
@@ -66,5 +102,13 @@ if __name__ == '__main__' :
     # note that we make use of the fact that the samples have already been filtered to discard zero prior
     obs_indices = rng.choice(obs_indices, size=len(obs_indices), replace=False, p=prior_sims)
 
+    # some random number so different slurm jobs don't interfere
+    rnd = rng.integers(2**63)
+    coverage_fname = f'{WRKDIR}/coverage_data_{rnd}.dat'
+    with open(coverage_fname, 'w') as f :
+        f.write('# oneminusalpha, ranks...\n')
+
+    workers = Workers(mp.Lock(), coverage_fname)
+
     with mp.Pool(NCORES) as pool :
-        pool.map(one_chain, obs_indices)
+        pool.map(workers, obs_indices)
