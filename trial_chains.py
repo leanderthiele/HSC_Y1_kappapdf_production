@@ -46,8 +46,7 @@ def get_possible_sims () :
 
 class Workers :
 
-    def __init__ (self, lock, coverage_fname) :
-        self.lock = lock
+    def __init__ (self, coverage_fname) :
         self.coverage_fname = coverage_fname
 
 
@@ -79,7 +78,7 @@ class Workers :
                 ranks = np.full(chain.shape[-1], -1)
         
         # make sure we don't mess up the output
-        self.lock.acquire()
+        lock.acquire()
         try :
             ranks_str = ' '.join(map(lambda s: f'{s:.8f}', ranks))
             with open(self.coverage_fname, 'a') as f :
@@ -87,7 +86,14 @@ class Workers :
         except Exception as e :
             print(f'***Writing coverage to file failed for idx={idx}: {e}', file=sys.stderr)
         finally :
-            self.lock.release()
+            lock.release()
+
+
+    @staticmethod
+    def init_pool_process (the_lock) :
+        global lock
+        lock = the_lock
+
 
 
 if __name__ == '__main__' :
@@ -109,7 +115,8 @@ if __name__ == '__main__' :
     with open(coverage_fname, 'w') as f :
         f.write('# oneminusalpha, ranks...\n')
 
-    workers = Workers(mp.Lock(), coverage_fname)
+    LOCK = mp.Lock()
+    workers = Workers(coverage_fname)
 
-    with mp.Pool(NCORES) as pool :
+    with mp.Pool(NCORES, initializer=Workers.init_pool_process, initargs=(LOCK, )) as pool :
         pool.map(workers, obs_indices)
