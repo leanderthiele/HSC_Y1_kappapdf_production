@@ -9,7 +9,8 @@ ROOT = '/scratch/gpfs/lthiele/hsc_chains'
 
 # have placeholder which we can later use for labels
 runs = {
-        'befab23d6ee10fe971a5ad7118957c9c': None,
+        'befab23d6ee10fe971a5ad7118957c9c': 'baseline PDF only',
+        '3e14c0d1a34c1aa19ab78949396014de': 'cov_mode=gpr_scale',
        }
 
 # can play with the binning here
@@ -32,7 +33,7 @@ for run_hash, run_info in runs.items() :
 
     coverage = np.array([np.count_nonzero(oma<e) for e in edges_qq]) / len(oma)
 
-    label = f'$\\tt{{ {run_hash[:4]} }}$' if run_info is None else run_info
+    label = f'$\\tt{{ {run_hash[:4]} }}$: {run_info}'
     ax_qq.plot(edges_qq, coverage, label=label)
     ax_ra.hist(ranks, bins=edges_ra, histtype='step', label=label)
 

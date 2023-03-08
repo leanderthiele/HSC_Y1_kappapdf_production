@@ -40,7 +40,7 @@ S = {
              'low_cut': 3,
              'high_cut': 0,
              'delete': 9, # delete one bin to prevent ill-conditioned covariance from sum constraint
-             'cov_mode': 'gpr',
+             'cov_mode': 'fixed',
             },
      
      # power spectrum settings, if not included we do not use power spectrum
