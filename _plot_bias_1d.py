@@ -12,6 +12,8 @@ runs = {
         'b8f4e40091ee24e646bb879d225865f6': \
             {
              'fiducial': 'fiducial',
+             'mbias/mbias_plus': 'mbias_plus',
+             'mbias/mbias_minus': 'mbias_minus',
             },
        }
 
@@ -40,7 +42,7 @@ for ii, (run_hash, bias_cases) in enumerate(runs.items()) :
         std = np.median(stds) # currently unused
 
         h, _  = np.histogram(means, bins=edges)
-        h = h.astype(float) / len(h)
+        h = h.astype(float) / np.sum(h)
 
         ax.plot(centers, h,
                 linestyle=default_linestyles[ii], color=default_colors[jj],
