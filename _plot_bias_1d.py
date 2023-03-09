@@ -90,6 +90,7 @@ for ii, (run_hash, bias_cases) in enumerate(runs.items()) :
     ax.plot(fine_centers, np.exp( -0.5 * ( (fine_centers-S8_fid) / std )**2 ),
             linestyle=default_linestyles[ii], color=black)
 
+ax.set_xlabel('$S_8$')
 ax.axvline(S8_fid, color=black)
 ax.set_xlim(*S8_range)
 ax.set_ylim(0, None)
