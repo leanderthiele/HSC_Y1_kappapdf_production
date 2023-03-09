@@ -27,7 +27,7 @@ data = Data()
 theta_sims = data.get_cosmo('cosmo_varied')
 allowed_cosmo_indices = []
 in_interval = lambda x, t: t[0] <= x <= t[1]
-for ii, theta in theta_sims :
+for ii, theta in enumerate(theta_sims) :
     if all(in_interval(t, r) for t, r in zip(theta, restrict.values())) :
         allowed_cosmo_indices.append(ii)
 
@@ -47,5 +47,6 @@ for run_hash in stat_runs.keys() :
     all_avail_cosmo_indices.append(avail_cosmo_indices)
 
 # first try to get exactly the same runs, maybe we have enough
-avail_indices = set.intersection(*all_avail_indices)
-print(avail_indices)
+# if we have about a thougsand runs this is usually enough
+avail_indices = set.intersection(*map(set, all_avail_indices))
+assert len(avail_indices) >= NROWS * NCOLS
