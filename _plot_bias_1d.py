@@ -17,6 +17,12 @@ runs = {
              'mbias/mbias_plus': 'mbias_plus',
              'mbias/mbias_minus': 'mbias_minus',
             },
+        'befab23d6ee10fe971a5ad7118957c9c': \
+            {
+             'fiducial': 'fiducial',
+             'mbias/mbias_plus': 'mbias_plus',
+             'mbias/mbias_minus': 'mbias_minus',
+            },
        }
 
 def make_label (run_hash, bias_info) :
@@ -62,6 +68,7 @@ for ii, (run_hash, bias_cases) in enumerate(runs.items()) :
                 label=make_label(run_hash, bias_info))
 
     std = np.median(all_std)
+    print(f'std = {std:.3f} [{run_hash[:4]}]')
     ax.plot(fine_centers, np.exp( -0.5 * ( (fine_centers-S8_fid) / std )**2 ),
             linestyle=default_linestyles[ii], color=black)
 

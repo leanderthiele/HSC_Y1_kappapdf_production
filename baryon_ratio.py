@@ -27,8 +27,9 @@ for stat in ['pdf_stdmap', 'pdf', 'ps', ] :
         os.makedirs(os.path.dirname(outfile), exist_ok=True)
         
         tng_dark_fnames = glob(f'{ROOT}/kappaTNG/dark/{pattern}')
+        print(f'Found {len(tng_dark_fnames)} dark files ')
         tng_hydro_fnames = glob(f'{ROOT}/kappaTNG/hydro/{pattern}')
-        print(f'Found {len(tng_dark_fnames)} dark files and {len(tng_hydro_fnames)} hydro files')
+        print(f'Found {len(tng_hydro_fnames)} hydro files')
         assert len(tng_hydro_fnames) == len(tng_dark_fnames)
 
         tng_dark_data = np.stack([np.load(fname) for fname in tng_dark_fnames])
