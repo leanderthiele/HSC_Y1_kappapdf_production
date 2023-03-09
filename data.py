@@ -16,8 +16,6 @@ class Data :
 
     # data layout
     NCOS = 100
-    # TODO TNG not implemented yet, probably do this through ratio and get into same format
-    # TNG_N_PER_POINT = 5
     NSEEDS = {
               'cosmo_varied': 50,
               'fiducial': 2268,
@@ -25,9 +23,6 @@ class Data :
               'photoz/mizuki':   210,
               'mbias/mbias_minus': 100,
               'mbias/mbias_plus':  100,
-    # TODO we don't have these available yet
-    #         'baryons/hydro': 1998//TNG_N_PER_POINT,
-    #         'baryons/dark':  1998//TNG_N_PER_POINT,
     # TODO this one vanished, not sure if we ever needed it
     #         'nom': NFID,
               'real': 1,
@@ -91,19 +86,23 @@ class Data :
         if case==cosmo_varied, [N, 2, ], else [2, ],
         in the order S8, Om
         """
-        if case == 'cosmo_varied' :
+        if case.startswith('cosmo_varied') :
             _, Om, s8 = np.loadtxt(f'{Data.ROOT}/stats_cosmo_varied/omegam_sigma8_design3.dat',
                                    unpack=True)
             S8 = s8 * np.sqrt(Om / 0.3)
             return np.stack([S8, Om, ], axis=-1)
-        elif case == 'real' :
+        elif case.startswith('real') :
             return None
         else :
             return Data.FID_THETA.copy()
 
 
     def get_used_stats (self) :
-        return self.USE_STATS.copy()
+        return Data.USE_STATS.copy()
+
+
+    def get_nseeds (self, case) :
+        return Data.NSEEDS[case.split('~')[0]]
 
 
     def get_stat_mask (self, stat) :
@@ -123,7 +122,7 @@ class Data :
         """ load all files into memory and stack them into a nice array, includes cuts and transformations
         output = [ (cosmo_idx), seed, data bin ]
         """
-        if case == 'cosmo_varied' :
+        if case.startswith('cosmo_varied') :
             out = np.stack([self._stack_data_helper(stat, case, model=cc+1) for cc in range(Data.NCOS)], axis=0)
         else :
             out = self._stack_data_helper(stat, case)
@@ -139,7 +138,7 @@ class Data :
             out = 13 + np.log(np.maximum(out, 1.2347965399050656e-06))
         else : # pdf without log
             out *= 3e1
-        return out.reshape(*out.shape[:(2 if case=='cosmo_varied' else 1)], -1)
+        return out.reshape(*out.shape[:(2 if case.startswith('cosmo_varied') else 1)], -1)
 
 
     def _stack_data_helper (self, stat, case, model=None) :
@@ -147,6 +146,10 @@ class Data :
         output = [seed, zs, smooth, nbins]
         does not perform cutting
         """
+        if '~' in case :
+            case, ratio_case = case.split('~')
+        else :
+            ratio_case = None
         out = np.zeros((Data.NSEEDS[case], Data.NZS[stat], Data.NSMOOTH_ALL, Data.NBINS_ALL[stat]))
         for ii, zs_idx in enumerate(S[stat]['zs']) :
             for field, area in Data.FIELDS.items() :
@@ -156,6 +159,12 @@ class Data :
                 if stat == 'pdf' : # normalize TODO read this again
                     f = f / np.mean(np.sum(f, axis=-1), axis=0)[None, :, None]
                 out[:, ii, ...] += (area / Data.TOT_AREA) * f
+        if ratio_case is not None :
+            ratio = np.stack([
+                              np.load(self._ratio_fname(stat, ratio_case, zs_idx)) \
+                              for zs_idx in S[stat]['zs']
+                             ], axis=0)
+            out = out * ratio[None, ...]
         return out
 
 
@@ -185,6 +194,24 @@ class Data :
         out = f'{out}.npy'
         return out
 
+
+    def _ratio_fname (self, stat, ratio_case, zs_idx) :
+        """ return the ratio file name
+        stat ... one of [pdf, ps, ]
+        ratio_case ... currently only baryon implemented
+        zs_idx ... 0 for single_z, 1-4 otherwise
+        """
+        assert stat in Data.USE_STATS
+        assert ratio_case in ['baryon', ]
+        assert zs_idx in [0, 1, 2, 3, 4, ]
+        out = f'{Data.ROOT}/ratio_{ratio_case}'
+        out = f'{out}/{stat if stat=="pdf" else "power_spectrum"}'
+        out = f'{out}/{stat if stat=="pdf" else "clee"}'
+        out = f'{out}_{f"z{zs_idx}" if zs_idx else "singlez"}'
+        if stat == 'pdf' and S[stat]['unitstd'] and case != 'real' :
+            out = f'{out}_stdmap'
+        out = f'{out}.npy'
+        return out
 
 
 class DataWrapper :

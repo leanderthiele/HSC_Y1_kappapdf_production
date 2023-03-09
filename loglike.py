@@ -18,14 +18,15 @@ class LogLike :
     def __init__ (self, obs_case, obs_idx) :
         """ constructor
         obs_case ... one of the entries in Data.NSEEDS
+                     (can have ~ratio) added
         obs_idx  ... the observation index in the flattened array, 
                      needs to be zero for real data
         """
 
         self.data = CompressedData()
 
-        if obs_case == 'cosmo_varied' :
-            test_idx = obs_idx // Data.NSEEDS[obs_case]
+        if obs_case.startswith('cosmo_varied') :
+            test_idx = obs_idx // self.data.get_nseeds(obs_case)
             self.theta_real = self.data.get_cosmo(obs_case)[test_idx]
         else :
             test_idx = None

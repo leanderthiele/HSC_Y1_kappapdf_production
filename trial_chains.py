@@ -14,7 +14,7 @@ from settings import S, IDENT
 OBS_CASE = argv[1]
 NCORES = int(argv[2])
 
-WRKDIR = f'/scratch/gpfs/lthiele/hsc_chains/{OBS_CASE}_{IDENT}'
+WRKDIR = f'/scratch/gpfs/lthiele/hsc_chains/{OBS_CASE.replace("~", "-")}_{IDENT}'
 
 
 def get_possible_sims () :
@@ -28,7 +28,7 @@ def get_possible_sims () :
     # compute their logpriors
     logprior_sims = np.array([logprior(t) for t in theta_sims])
 
-    nseeds = data.NSEEDS[OBS_CASE]
+    nseeds = data.get_nseeds(OBS_CASE)
     obs_indices = np.arange(len(theta_sims) * nseeds, dtype=int)
     logprior_sims = logprior_sims.repeat(nseeds, axis=0)
 
@@ -63,7 +63,7 @@ class Workers :
 
         chain = result['chain']
         chain = chain.reshape(-1, chain.shape[-1])
-        if OBS_CASE == 'cosmo_varied' :
+        if OBS_CASE.startswith('cosmo_varied') :
             true_theta = result['true_theta']
             try :
                 # doesn't make sense otherwise
@@ -122,7 +122,7 @@ if __name__ == '__main__' :
     with open(info_fname, 'w') as f :
         f.write(f'{S}\n')
 
-    if OBS_CASE == 'cosmo_varied' :
+    if OBS_CASE.startswith('cosmo_varied') :
         # this is for getting calibration checks
         summary_fname = f'{WRKDIR}/coverage_data_{rnd}.dat'
         with open(summary_fname, 'w') as f :
