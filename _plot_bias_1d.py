@@ -3,6 +3,8 @@ from glob import glob
 import numpy as np
 from matplotlib import pyplot as plt
 
+from sklearn.neighbors import KernelDensity
+
 from data import Data
 from _plot_style import *
 
@@ -25,10 +27,13 @@ S8_fid = Data().get_cosmo('fiducial')[0]
 
 edges = np.linspace(*S8_range, num=51)
 centers = 0.5 * (edges[1:] + edges[:-1])
+fine_centers = np.linspace(*S8_range, num=500)
 
 fig, ax = plt.subplots(figsize=(5, 5))
 
 for ii, (run_hash, bias_cases) in enumerate(runs.items()) :
+    
+    all_std = []
 
     for jj, (bias_case, bias_info) in enumerate(bias_cases.items()) :
         
@@ -39,14 +44,24 @@ for ii, (run_hash, bias_cases) in enumerate(runs.items()) :
         means = means[where_unique]
         stds = stds[where_unique]
 
-        std = np.median(stds) # currently unused
+        this_std = np.median(stds)
+        all_std.append(this_std)
 
-        h, _  = np.histogram(means, bins=edges)
-        h = h.astype(float) / np.sum(h)
+        # h, _  = np.histogram(means, bins=edges)
+        # h = h.astype(float) / np.sum(h)
+        
+        kde = KernelDensity(kernel='epanechnikov', bandwidth=0.01*this_std).fit(means.reshape(-1, 1))
+        logh = kde.score_samples(fine_centers.reshape(-1, 1))
+        logh -= np.max(logh)
+        h = np.exp(logh)
 
-        ax.plot(centers, h,
+        ax.plot(fine_centers, h,
                 linestyle=default_linestyles[ii], color=default_colors[jj],
                 label=make_label(run_hash, bias_info))
+
+    std = np.median(all_std)
+    ax.plot(fine_centers, np.exp( -0.5 * ( (fine_centers-S8_fid) / std )**2 ),
+            linestyle=default_linestyles[ii], color=black)
 
 ax.axvline(S8_fid, color=black)
 ax.set_xlim(*S8_range)
