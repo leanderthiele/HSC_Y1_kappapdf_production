@@ -31,17 +31,17 @@ lstsq approaches the gpr result as N is increased to relatively large (~20)
 
 S = {
      # pdf settings, if not included we do not use pdf
-     #'pdf': {
-     #        'unitstd': True,
-     #        'log': True,
-     #        'zs': [1, 2, 3, ],
-     #        'smooth': [2, 5, ],
-     #        'rebin': 1,
-     #        'low_cut': 3,
-     #        'high_cut': 0,
-     #        'delete': 9, # delete one bin to prevent ill-conditioned covariance from sum constraint
-     #        'cov_mode': 'gpr', # tried other things here and gpr is the only that works
-     #       },
+     'pdf': {
+             'unitstd': True,
+             'log': True,
+             'zs': [1, 2, 3, ],
+             'smooth': [2, 5, ],
+             'rebin': 1,
+             'low_cut': 3,
+             'high_cut': 0,
+             'delete': 9, # delete one bin to prevent ill-conditioned covariance from sum constraint
+             'cov_mode': 'gpr', # tried other things here and gpr is the only that works
+            },
      
      # power spectrum settings, if not included we do not use power spectrum
      'ps': {

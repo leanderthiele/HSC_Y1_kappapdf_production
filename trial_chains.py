@@ -77,20 +77,18 @@ class Workers :
             except Exception as e :
                 print(f'***Ranks failed for idx={idx}: {e}', file=sys.stderr)
                 ranks = np.full(chain.shape[-1], -1)
+            ranks_str = ' '.join(map(lambda s: f'{s:.8f}', ranks))
+            line = f'{oma:.8f} {ranks_str}'
         else :
             mean = np.mean(chain[:, 0])
             std = np.std(chain[:, 0])
+            line = f'{mean:.8f} {std:.8f}'
         
         # make sure we don't mess up the output
         lock.acquire()
         try :
-            if OBS_CASE == 'cosmo_varied' :
-                ranks_str = ' '.join(map(lambda s: f'{s:.8f}', ranks))
-                line = f'{idx:5} {oma:.8f} {ranks_str}'
-            else :
-                line = f'{idx:5} {mean:.8f} {std:.8f}'
             with open(self.summary_fname, 'a') as f :
-                f.write(f'{line}\n')
+                f.write(f'{idx:5} {line}\n')
         except Exception as e :
             print(f'***Writing line to file failed for idx={idx}: {e}', file=sys.stderr)
         finally :

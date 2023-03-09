@@ -7,10 +7,10 @@ stat_runs = {
              # clearly overconfident
              # '45b6a5961cb86a0e7690fc6919c9bf8e': 'cov_mode=fixed',
              # somewhat overconfident
-             'd9d31391c8a306a481a4a26ce07969d2': 'baseline PDF+PS',
-             # better tha d9d3 but still overconfident
+             # 'd9d31391c8a306a481a4a26ce07969d2': 'baseline PDF+PS',
+             # better than d9d3 but still overconfident
              'b8f4e40091ee24e646bb879d225865f6': 'PDF+PS, PS cov_mode=fixed',
-             #
+             # confirms that the (rare) catastrophic failures come from the power spectrum
              '68c282161ba83a2267303b9ea1500119': 'PS only, cov_mode=fixed',
             }
 
