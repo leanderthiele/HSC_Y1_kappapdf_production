@@ -24,8 +24,17 @@ fig_ra, ax_ra = plt.subplots(figsize=(5, 5))
 for run_hash, run_info in runs.items() :
     
     fnames = glob(f'{ROOT}/cosmo_varied_{run_hash}/coverage_data_[0-9]*.dat')
-    oma = np.concatenate([np.loadtxt(fname, usecols=(0,)) for fname in fnames])
-    ranks = np.concatenate([np.loadtxt(fname, usecols=(1,)) for fname in fnames])
+    # figure out if this is one of the old runs where we didn't have the index information
+    with open(fnames[0], 'r') as f :
+        header = f.readline().strip()
+    col_offset = 1 if 'index' in header else 0
+    # do not filter for unique runs here as it improves the faithfulness of our prior
+    # sampling if the prior is non-trivial
+    # idx = np.concatenate([np.loadtxt(fname, usecols=(0,), dtype=int) for fname in fnames])
+    oma, ranks = np.concatenate([
+                                 np.loadtxt(fname, usecols=(col_offset+0, col_offset+1))
+                                 for fname in fnames
+                                ], axis=0).T
 
     # filter out failures (shouldn't be many)
     oma = oma[oma>0]

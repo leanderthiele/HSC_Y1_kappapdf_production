@@ -82,7 +82,7 @@ class Workers :
         try :
             ranks_str = ' '.join(map(lambda s: f'{s:.8f}', ranks))
             with open(self.coverage_fname, 'a') as f :
-                f.write(f'{oma:.8f} {ranks_str}\n')
+                f.write(f'{idx:5} {oma:.8f} {ranks_str}\n')
         except Exception as e :
             print(f'***Writing coverage to file failed for idx={idx}: {e}', file=sys.stderr)
         finally :
@@ -115,7 +115,7 @@ if __name__ == '__main__' :
     coverage_fname = f'{WRKDIR}/coverage_data_{rnd}.dat'
     info_fname = f'{WRKDIR}/settings_{rnd}.info'
     with open(coverage_fname, 'w') as f :
-        f.write('# oneminusalpha, ranks...\n')
+        f.write('# index, oneminusalpha, ranks...\n')
     with open(info_fname, 'w') as f :
         f.write(f'{S}\n')
 
