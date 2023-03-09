@@ -3,7 +3,11 @@
 from matplotlib import pyplot as plt
 from itertools import cycle
 
-plt.style.use('dark_background')
+if True :
+    plt.style.use('dark_background')
+    black = 'white'
+else :
+    black = 'black'
 # plt.rcParams.update({'font.size': 20})
 
 def savefig (fig, name) :
