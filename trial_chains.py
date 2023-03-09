@@ -46,8 +46,8 @@ def get_possible_sims () :
 
 class Workers :
 
-    def __init__ (self, coverage_fname) :
-        self.coverage_fname = coverage_fname
+    def __init__ (self, summary_fname) :
+        self.summary_fname = summary_fname
 
 
     def __call__ (self, idx) :
@@ -61,30 +61,38 @@ class Workers :
         chain_fname = f'{WRKDIR}/chain_{idx}.npz'
         np.savez(chain_fname, **result)
 
+        chain = result['chain']
+        chain = chain.reshape(-1, chain.shape[-1])
         if OBS_CASE == 'cosmo_varied' :
-            chain = result['chain']
             true_theta = result['true_theta']
             try :
                 # doesn't make sense otherwise
-                oma = Oneminusalpha(chain[..., 0].flatten(), true_theta[0])
+                oma = Oneminusalpha(chain[:, 0], true_theta[0])
             except Exception as e :
                 print(f'***Oneminusalpha failed for idx={idx}: {e}', file=sys.stderr)
                 oma = -1
 
             try :
-                ranks = Ranks(chain.reshape(-1, chain.shape[-1]), true_theta)
+                ranks = Ranks(chain, true_theta)
             except Exception as e :
                 print(f'***Ranks failed for idx={idx}: {e}', file=sys.stderr)
                 ranks = np.full(chain.shape[-1], -1)
+        else :
+            mean = np.mean(chain[:, 0])
+            std = np.std(chain[:, 0])
         
         # make sure we don't mess up the output
         lock.acquire()
         try :
-            ranks_str = ' '.join(map(lambda s: f'{s:.8f}', ranks))
-            with open(self.coverage_fname, 'a') as f :
-                f.write(f'{idx:5} {oma:.8f} {ranks_str}\n')
+            if OBS_CASE == 'cosmo_varied' :
+                ranks_str = ' '.join(map(lambda s: f'{s:.8f}', ranks))
+                line = f'{idx:5} {oma:.8f} {ranks_str}'
+            else :
+                line = f'{idx:5} {mean:.8f} {std:.8f}'
+            with open(self.summary_fname, 'a') as f :
+                f.write(f'{line}\n')
         except Exception as e :
-            print(f'***Writing coverage to file failed for idx={idx}: {e}', file=sys.stderr)
+            print(f'***Writing line to file failed for idx={idx}: {e}', file=sys.stderr)
         finally :
             lock.release()
 
@@ -112,15 +120,23 @@ if __name__ == '__main__' :
     # some random number so different slurm jobs don't interfere
     rnd = rng.integers(2**63)
 
-    coverage_fname = f'{WRKDIR}/coverage_data_{rnd}.dat'
     info_fname = f'{WRKDIR}/settings_{rnd}.info'
-    with open(coverage_fname, 'w') as f :
-        f.write('# index, oneminusalpha, ranks...\n')
     with open(info_fname, 'w') as f :
         f.write(f'{S}\n')
 
+    if OBS_CASE == 'cosmo_varied' :
+        # this is for getting calibration checks
+        summary_fname = f'{WRKDIR}/coverage_data_{rnd}.dat'
+        with open(summary_fname, 'w') as f :
+            f.write('# index, oneminusalpha, ranks...\n')
+    else :
+        # this is for getting bias checks
+        summary_fname = f'{WRKDIR}/bias_data_{rnd}.dat'
+        with open(summary_fname, 'w') as f :
+            f.write('# index, mean, std\n')
+
     LOCK = mp.Lock()
-    workers = Workers(coverage_fname)
+    workers = Workers(summary_fname)
 
     with mp.Pool(NCORES, initializer=Workers.init_pool_process, initargs=(LOCK, )) as pool :
         pool.map(workers, obs_indices)
