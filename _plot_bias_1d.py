@@ -11,18 +11,34 @@ from _plot_style import *
 ROOT = '/scratch/gpfs/lthiele/hsc_chains'
 
 runs = {
+        # PDF + PS baseline, relatively ok, largest shift is mbias_minus which is 0.3 sigma
         'b8f4e40091ee24e646bb879d225865f6': \
-            {
-             'fiducial': 'fiducial',
-             'mbias/mbias_plus': 'mbias_plus',
-             'mbias/mbias_minus': 'mbias_minus',
-            },
+             {
+              'fiducial': 'fiducial',
+              'mbias/mbias_plus': 'mbias_plus',
+              'mbias/mbias_minus': 'mbias_minus',
+              'fiducial-baryon': 'baryon',
+             },
+
+        # PDF baseline, all fine (shifts within 0.1 sigma)
+        # interesting: width of the posterior depends on mbias:
+        #      larger mbias -> tighter posterior. Can we explain this?
         'befab23d6ee10fe971a5ad7118957c9c': \
             {
              'fiducial': 'fiducial',
              'mbias/mbias_plus': 'mbias_plus',
              'mbias/mbias_minus': 'mbias_minus',
+             'fiducial-baryon': 'baryon',
             },
+
+        # PDF one more low bin
+        # still fine, but improvement in error bar is very small (0.102 vs 0.103)
+        # so no need to include this bin
+        # '9fe279192f2aa13b590e3367731e7a60': {  'fiducial-baryon': 'baryon', },
+
+        # PDF + PS, ps high_cut=5 instead of 6
+        # starts to shift visibly, 0.3 in units of sigma, and only small improvement in constraint
+        # '496e0da40dc63eb1faa88522765de834': { 'fiducial-baryon': 'baryon', },
        }
 
 def make_label (run_hash, bias_info) :
@@ -40,6 +56,8 @@ fig, ax = plt.subplots(figsize=(5, 5))
 for ii, (run_hash, bias_cases) in enumerate(runs.items()) :
     
     all_std = []
+    if len(bias_cases) == 0 :
+        continue
 
     for jj, (bias_case, bias_info) in enumerate(bias_cases.items()) :
         

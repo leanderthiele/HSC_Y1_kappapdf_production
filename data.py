@@ -164,6 +164,10 @@ class Data :
                               np.load(self._ratio_fname(stat, ratio_case, zs_idx)) \
                               for zs_idx in S[stat]['zs']
                              ], axis=0)
+            # because we set numpy to strict, need to get rid of some NaNs here
+            # These only occur for the 3 lowest smoothing scales, and there in the first
+            # two kappa bins (which we cut anyways)
+            ratio = np.nan_to_num(ratio, nan=0.0, posinf=0.0, neginf=0.0)
             out = out * ratio[None, ...]
         return out
 
@@ -208,7 +212,7 @@ class Data :
         out = f'{out}/{stat if stat=="pdf" else "power_spectrum"}'
         out = f'{out}/{stat if stat=="pdf" else "clee"}'
         out = f'{out}_{f"z{zs_idx}" if zs_idx else "singlez"}'
-        if stat == 'pdf' and S[stat]['unitstd'] and case != 'real' :
+        if stat == 'pdf' and S[stat]['unitstd'] and ratio_case != 'real' :
             out = f'{out}_stdmap'
         out = f'{out}.npy'
         return out

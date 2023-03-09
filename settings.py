@@ -44,13 +44,13 @@ S = {
             },
      
      # power spectrum settings, if not included we do not use power spectrum
-     #'ps': {
-     #       'rebin': 1,
-     #       'zs': [0, ],
-     #       'low_cut': 4,
-     #       'high_cut': 6,
-     #       'cov_mode': 'fixed',
-     #      },
+     'ps': {
+            'rebin': 1,
+            'zs': [0, ],
+            'low_cut': 4,
+            'high_cut': 5,
+            'cov_mode': 'fixed',
+           },
 
      # this is a bit ugly but who cares (special case when MOPED in joint mode)
      # probably never used...
