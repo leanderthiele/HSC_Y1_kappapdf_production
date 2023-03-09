@@ -17,8 +17,7 @@ def GetTestTrials (run_hashes, N, obs_case='cosmo_varied') :
     """ return N random trial indices that fall into restrict and where we have chains in all runs """
     
     if obs_case == 'cosmo_varied' :
-        data = Data()
-        theta_sims = data.get_cosmo('cosmo_varied')
+        theta_sims = Data().get_cosmo('cosmo_varied')
         allowed_cosmo_indices = []
         in_interval = lambda x, t: t[0] <= x <= t[1]
         for ii, theta in enumerate(theta_sims) :

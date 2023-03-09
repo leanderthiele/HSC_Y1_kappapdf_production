@@ -19,7 +19,7 @@ def make_label (run_hash, bias_info) :
     return f'$\\tt{{ {run_hash[:4]} }}$: {bias_info}'
 
 S8_range = [0.45, 1.05]
-S8_fid = data().get_cosmo('fiducial')[0]
+S8_fid = Data().get_cosmo('fiducial')[0]
 
 edges = np.linspace(*S8_range, num=51)
 centers = 0.5 * (edges[1:] + edges[:-1])
@@ -30,7 +30,7 @@ for ii, (run_hash, bias_cases) in enumerate(runs.items()) :
 
     for jj, (bias_case, bias_info) in enumerate(bias_cases.items()) :
         
-        fnames = glob(f'{ROOT}/{bias_case}/bias_data_[0-9]*.dat')
+        fnames = glob(f'{ROOT}/{bias_case}_{run_hash}/bias_data_[0-9]*.dat')
         indices = np.concatenate([np.loadtxt(fname, usecols=(0,), dtype=int) for fname in fnames])
         means, stds = np.concatenate([np.loadtxt(fname, usecols=(1, 2, )) for fname in fnames], axis=0).T
         _, where_unique = np.unique(indices, return_index=True)
