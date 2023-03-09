@@ -16,7 +16,7 @@ edges_qq, edges_ra = [np.linspace(0, 1, num=Nbins+1) for Nbins in [Nbins_qq, Nbi
 fig_qq, ax_qq = plt.subplots(figsize=(5, 5))
 fig_ra, ax_ra = plt.subplots(figsize=(5, 5))
 
-for run_hash, run_info in runs.items() :
+for run_hash, run_info in stat_runs.items() :
     
     fnames = glob(f'{ROOT}/cosmo_varied_{run_hash}/coverage_data_[0-9]*.dat')
     # figure out if this is one of the old runs where we didn't have the index information
@@ -37,7 +37,7 @@ for run_hash, run_info in runs.items() :
 
     # coverage = np.array([np.count_nonzero(oma<e) for e in edges_qq]) / len(oma)
 
-    label = make_label(run_hash, run_info)
+    label = stat_make_label(run_hash, run_info)
     ax_qq.hist(oma, bins=edges_qq, histtype='step', cumulative=True, density=True,
                label=label)
     ax_ra.hist(ranks, bins=edges_ra, histtype='step', density=True,
