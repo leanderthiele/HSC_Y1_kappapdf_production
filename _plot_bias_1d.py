@@ -47,10 +47,12 @@ for ii, (run_hash, bias_cases) in enumerate(runs.items()) :
         this_std = np.median(stds)
         all_std.append(this_std)
 
+        print(f'delta(S8)/sigma = {(np.median(means)-S8_fid)/this_std:.2f} [{run_hash[:4]} {bias_info}]')
+
         # h, _  = np.histogram(means, bins=edges)
         # h = h.astype(float) / np.sum(h)
         
-        kde = KernelDensity(kernel='epanechnikov', bandwidth=0.01*this_std).fit(means.reshape(-1, 1))
+        kde = KernelDensity(kernel='epanechnikov', bandwidth=0.05).fit(means.reshape(-1, 1))
         logh = kde.score_samples(fine_centers.reshape(-1, 1))
         logh -= np.max(logh)
         h = np.exp(logh)
