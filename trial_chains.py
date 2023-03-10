@@ -63,6 +63,10 @@ class Workers :
 
         chain = result['chain']
         chain = chain.reshape(-1, chain.shape[-1])
+        mean = np.mean(chain[:, 0])
+        std = np.std(chain[:, 0])
+        line = f'{mean:.8f} {std:.8f}'
+
         if OBS_CASE.startswith('cosmo_varied') :
             true_theta = result['true_theta']
             try :
@@ -78,11 +82,7 @@ class Workers :
                 print(f'***Ranks failed for idx={idx}: {e}', file=sys.stderr)
                 ranks = np.full(chain.shape[-1], -1)
             ranks_str = ' '.join(map(lambda s: f'{s:.8f}', ranks))
-            line = f'{oma:.8f} {ranks_str}'
-        else :
-            mean = np.mean(chain[:, 0])
-            std = np.std(chain[:, 0])
-            line = f'{mean:.8f} {std:.8f}'
+            line = f'{oma:.8f} {ranks_str} {line}'
         
         # make sure we don't mess up the output
         lock.acquire()
@@ -126,7 +126,7 @@ if __name__ == '__main__' :
         # this is for getting calibration checks
         summary_fname = f'{WRKDIR}/coverage_data_{rnd}.dat'
         with open(summary_fname, 'w') as f :
-            f.write('# index, oneminusalpha, ranks...\n')
+            f.write('# index, oneminusalpha, ranks..., mean, std\n')
     else :
         # this is for getting bias checks
         summary_fname = f'{WRKDIR}/bias_data_{rnd}.dat'
