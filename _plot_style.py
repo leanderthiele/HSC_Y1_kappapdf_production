@@ -3,7 +3,7 @@
 from matplotlib import pyplot as plt
 from itertools import cycle
 
-if True :
+if False :
     plt.style.use('dark_background')
     black = 'white'
 else :

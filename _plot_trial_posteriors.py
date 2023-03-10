@@ -41,7 +41,6 @@ for ii, (a, idx) in enumerate(zip(ax, use_indices)) :
     
     # put the true value in
     cosmo_idx = idx//Data.NSEEDS['cosmo_varied']
-    assert cosmo_idx in allowed_cosmo_indices
     true_S8, true_Om = theta_sims[cosmo_idx]
     new_ax[0, 0].axvline(true_S8, color=black)
     new_ax[1, 0].axvline(true_S8, color=black)

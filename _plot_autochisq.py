@@ -3,6 +3,7 @@ from matplotlib import pyplot as plt
 from matplotlib.colors import LogNorm
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 from scipy.stats.distributions import chi2
+from tqdm import tqdm
 
 from data import Data
 from loglike import LogLike
