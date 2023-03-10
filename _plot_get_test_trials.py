@@ -13,7 +13,7 @@ restrict = {
             'Om': (0.25, 0.35),
            }
 
-def GetTestTrials (run_hashes, N, obs_case='cosmo_varied') :
+def GetTestTrials (run_hashes, N=None, obs_case='cosmo_varied') :
     """ return N random trial indices that fall into restrict and where we have chains in all runs """
 
     data = Data()
@@ -44,7 +44,10 @@ def GetTestTrials (run_hashes, N, obs_case='cosmo_varied') :
 
     # first try to get exactly the same runs, maybe we have enough
     # if we have about a thougsand runs this is usually enough
-    avail_indices = set.intersection(*map(set, all_avail_indices))
-    assert len(avail_indices) >= N
+    avail_indices = list(set.intersection(*map(set, all_avail_indices)))
 
-    return np.random.default_rng().choice(list(avail_indices), size=N, replace=False)
+    if N is not None :
+        assert len(avail_indices) >= N
+        avail_indices = np.random.default_rng().choice(avail_indices, size=N, replace=False)
+
+    return avail_indices
