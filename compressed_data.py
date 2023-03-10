@@ -99,7 +99,7 @@ class CompressedData (DataWrapper) :
 
         delta_theta = data.get_cosmo('cosmo_varied') - data.get_cosmo('fiducial')[None, :]
         if 'compression_fid_shift' in S :
-            delta_theta -= np.array(S['compression_fid_shift'].values())
+            delta_theta -= np.array(list(S['compression_fid_shift'].values()))
         Cinv_lstsq = np.linalg.inv(np.array(CompressedData.COV_LSTSQ))
         ds = np.einsum('ia,ab,ib->i', delta_theta, Cinv_lstsq, delta_theta)
         select = np.argsort(ds)[:N]
@@ -120,7 +120,7 @@ class CompressedData (DataWrapper) :
         for ii, delta in enumerate(delta_theta) :
             t = data.get_cosmo('fiducial')
             if 'compression_fid_shift' in S :
-                t += np.array(S['compression_fid_shift'].values())
+                t += np.array(list(S['compression_fid_shift'].values()))
             t[ii] += delta
             mu_hi = gpr(t)
             t[ii] -= 2*delta
