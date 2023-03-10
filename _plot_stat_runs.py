@@ -12,6 +12,8 @@ stat_runs = {
              '68c282161ba83a2267303b9ea1500119': 'PS only, cov_mode=fixed',
              # better than d9d3 but still overconfident
              'b8f4e40091ee24e646bb879d225865f6': 'PDF+PS, PS cov_mode=fixed',
+             # 
+             '5ae39f509acb63122ff1b8b9f2baa589': 'PDF+PS, 0.05 shifted',
             }
 
 

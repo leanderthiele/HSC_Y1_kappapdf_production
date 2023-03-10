@@ -9,11 +9,15 @@ from _plot_style import *
 
 ROOT = '/scratch/gpfs/lthiele/hsc_chains'
 
-run_hash = '5ae39f509acb63122ff1b8b9f2baa589'
+run_hash = 'b8f4e40091ee24e646bb879d225865f6'
 
 fnames = glob(f'{ROOT}/cosmo_varied_{run_hash}/coverage_data_[0-9]*.dat')
 indices = np.concatenate([np.loadtxt(fname, usecols=(0, ), dtype=int) for fname in fnames])
 mean, std = np.concatenate([np.loadtxt(fname, usecols=(4, 5)) for fname in fnames], axis=0).T
+_, select = np.unique(indices, return_index=True)
+indices = indices[select]
+mean = mean[select]
+std = std[select]
 
 data = Data()
 cosmo_indices = np.array([idx//data.get_nseeds('cosmo_varied') for idx in indices], dtype=int)
@@ -25,12 +29,12 @@ N_points = []
 for uniq_cosmo_idx in uniq_cosmo_indices :
     select = (uniq_cosmo_idx == cosmo_indices)
     N_points.append(np.count_nonzero(select))
-    avg_mean = np.median( (mean[select] - theta[uniq_cosmo_idx]) / std[select] )
+    avg_bias.append( np.median( (mean[select] - theta[uniq_cosmo_idx][0]) / std[select] ) )
 avg_bias = np.array(avg_bias)
 
 fig, ax = plt.subplots(figsize=(5, 5))
 vmax = np.max(np.fabs(avg_bias))
-im = ax.scatter(*theta[uniq_cosmo_indices].T, c=avg_bias, vmin=-2, vmax=2, cmap='seismic')
+im = ax.scatter(*theta[uniq_cosmo_indices].T, c=avg_bias, vmin=-vmax, vmax=vmax, cmap='seismic')
 for idx, b, n in zip(uniq_cosmo_indices, avg_bias, N_points) :
     ax.text(*theta[idx], f'{b:.2f} {n:d}', va='bottom', ha='center',
             fontsize='xx-small', transform=ax.transData)
@@ -41,4 +45,6 @@ cbar = plt.colorbar(im, cax=cax)
 cbar.set_label('$\Delta S_8 / \sigma(S_8)$')
 
 ax.set_xlabel('$S_8$')
-ax.set_ylabel('$Omega_m$')
+ax.set_ylabel('$\Omega_m$')
+
+savefig(fig, 'bias_cosmo_varied')
