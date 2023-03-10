@@ -73,6 +73,8 @@ S = {
 
      # can switch s8 and S8 here to change the prior
      # ordering is important here!!!
+     # TODO might be worth decreasing the S8 upper bound a bit,
+     #      since this is really the edge of the emulated space
      'prior': {
                'S8': (0.45, 1.05),
                # 's8': (0.60, 1.10),
@@ -87,6 +89,9 @@ S = {
      # to test how sensitive we are to the number of realizations we have for
      # the cosmo varieds when constructing the emulator for the mean
      # 'mean_emulator_subsample': 25,
+
+     # RBF length scale for emulator, we found 3.0 to work best in cross-validation
+     'rbf_length_scale': 3.0,
     }
 
 import hashlib

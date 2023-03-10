@@ -2,6 +2,8 @@ import numpy as np
 
 from sklearn.gaussian_process import GaussianProcessRegressor, kernels
 
+from settings import S
+
 
 class GPR :
     
@@ -39,7 +41,8 @@ class GPR :
             y = np.delete(y, test_idx, axis=0)
 
         if kernel is None :
-            kernel = kernels.RBF(length_scale=1, length_scale_bounds='fixed')
+            length_scale = 1 if 'rbf_length_scale' not in S else S['rbf_length_scale']
+            kernel = kernels.RBF(length_scale=length_scale, length_scale_bounds='fixed')
 
         # make sure we get reproducible results by setting the seed!
         self.gpr = GaussianProcessRegressor(kernel=kernel, random_state=137).fit(x, y)
