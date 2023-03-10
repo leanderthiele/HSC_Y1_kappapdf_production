@@ -6,7 +6,7 @@ from sklearn.gaussian_process import GaussianProcessRegressor, kernels
 class GPR :
     
 
-    def __init__ (self, data, reduction=np.mean, test_idx=None, subsample=None) :
+    def __init__ (self, data, reduction=np.mean, test_idx=None, subsample=None, kernel=None) :
         """ constructor
         data ... something that behaves like a Data instance (but can be something different, e.g. compressed)
                  Needs to implement get_cosmo and get_datavec methods
@@ -38,9 +38,11 @@ class GPR :
             x = np.delete(x, test_idx, axis=0)
             y = np.delete(y, test_idx, axis=0)
 
+        if kernel is None :
+            kernel = kernels.RBF(length_scale=1, length_scale_bounds='fixed')
+
         # make sure we get reproducible results by setting the seed!
-        self.gpr = GaussianProcessRegressor(kernel=kernels.RBF(length_scale=1, length_scale_bounds='fixed'),
-                                            random_state=137).fit(x, y)
+        self.gpr = GaussianProcessRegressor(kernel=kernel, random_state=137).fit(x, y)
 
 
     def __call__ (self, x) :
