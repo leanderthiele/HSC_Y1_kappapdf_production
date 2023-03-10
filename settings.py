@@ -48,7 +48,7 @@ S = {
             'rebin': 1,
             'zs': [0, ],
             'low_cut': 4,
-            'high_cut': 5,
+            'high_cut': 6,
             'cov_mode': 'fixed',
            },
 
@@ -78,6 +78,10 @@ S = {
                # 's8': (0.60, 1.10),
                'Om': (0.20, 0.40),
               },
+
+     # to test how sensitive we are to the point around which we evaluate the
+     # derivatives for compression. Order important here
+     'compression_fid_shift': { 'S8': 0.05, 'Om': 0.05, }
     }
 
 import hashlib
