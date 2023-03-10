@@ -15,9 +15,9 @@ runs = {
         'b8f4e40091ee24e646bb879d225865f6': \
              {
               'fiducial': 'fiducial',
-              'mbias/mbias_plus': 'mbias_plus',
-              'mbias/mbias_minus': 'mbias_minus',
-              'fiducial-baryon': 'baryon',
+        #      'mbias/mbias_plus': 'mbias_plus',
+        #      'mbias/mbias_minus': 'mbias_minus',
+        #      'fiducial-baryon': 'baryon',
              },
 
         # PDF baseline, all fine (shifts within 0.1 sigma)
@@ -26,9 +26,9 @@ runs = {
         'befab23d6ee10fe971a5ad7118957c9c': \
             {
              'fiducial': 'fiducial',
-             'mbias/mbias_plus': 'mbias_plus',
-             'mbias/mbias_minus': 'mbias_minus',
-             'fiducial-baryon': 'baryon',
+        #     'mbias/mbias_plus': 'mbias_plus',
+        #     'mbias/mbias_minus': 'mbias_minus',
+        #     'fiducial-baryon': 'baryon',
             },
 
         # PDF one more low bin
@@ -39,6 +39,13 @@ runs = {
         # PDF + PS, ps high_cut=5 instead of 6
         # starts to shift visibly, 0.3 in units of sigma, and only small improvement in constraint
         # '496e0da40dc63eb1faa88522765de834': { 'fiducial-baryon': 'baryon', },
+
+        # PDF + PS, with the point where compression derivatives are evaluated shifted
+        # by +0.05 in both directions
+        '5ae39f509acb63122ff1b8b9f2baa589': { 'fiducial': 'fiducial' },
+
+        # use only half the cosmo varied augmenttations when estimating mean emulator
+        'e23a7da97c82e388c290089405629e2e': { 'fiducial': 'fiducial' },
        }
 
 def make_label (run_hash, bias_info) :
