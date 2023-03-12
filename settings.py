@@ -89,10 +89,10 @@ S = {
      # to test how sensitive we are to the number of realizations we have for
      # the cosmo varieds when constructing the emulator for the mean
      # the augmentations used have indices default_rng(subsample).choice(...)
-     # 'mean_emulator_subsample': 25,
+     'mean_emulator_subsample': 25,
 
      # RBF length scale for emulator, we found 3.0 to work best in cross-validation
-     'rbf_length_scale': 3.0,
+     # 'rbf_length_scale': 3.0,
     }
 
 import hashlib

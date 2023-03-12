@@ -45,10 +45,13 @@ runs = {
         '5ae39f509acb63122ff1b8b9f2baa589': { 'fiducial': 'fiducial' },
 
         # same but shift = -0.05
-        '6e8363dcd1644fdc55c7dee18e98cdd5': { 'fiducial': 'fiducial' },
+        # '6e8363dcd1644fdc55c7dee18e98cdd5': { 'fiducial': 'fiducial' },
 
         # use only half the cosmo varied augmenttations when estimating mean emulator
         'e23a7da97c82e388c290089405629e2e': { 'fiducial': 'fiducial' },
+
+        # rbf_length_scale = 3
+        'b1820713b3b511d2c9e67c482b07e1b2': { 'fiducial': 'fiducial' },
        }
 
 def make_label (run_hash, bias_info) :

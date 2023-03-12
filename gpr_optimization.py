@@ -10,8 +10,10 @@ from data import Data
 from gpr import GPR
 
 # here we test
-kernel = kernels.RBF(length_scale=3, length_scale_bounds='fixed')
+# kernel = kernels.RBF(length_scale=3, length_scale_bounds='fixed')
 # kernel = kernels.RationalQuadratic(length_scale=3, alpha=2.5, length_scale_bounds='fixed', alpha_bounds='fixed')
+kernel = kernels.RBF(length_scale=3, length_scale_bounds='fixed') \
+         + kernels.RBF(length_scale=2, length_scale_bounds='fixed')
 
 data = Data()
 
