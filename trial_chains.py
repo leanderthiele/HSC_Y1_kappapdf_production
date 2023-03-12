@@ -1,6 +1,7 @@
 import sys
 from sys import argv
 import os
+import traceback
 
 import multiprocessing as mp
 
@@ -51,11 +52,13 @@ class Workers :
 
 
     def __call__ (self, idx) :
+
         
         try :
             result = Sample(OBS_CASE, idx)
         except Exception as e :
-            print(f'***Sample failed for idx={idx}: {e}', file=sys.stderr)
+            print(f'***Sample failed for idx={idx}: {traceback.format_exc()}',
+                  file=sys.stderr)
             return
 
         chain_fname = f'{WRKDIR}/chain_{idx}.npz'
@@ -73,13 +76,15 @@ class Workers :
                 # doesn't make sense otherwise
                 oma = Oneminusalpha(chain[:, 0], true_theta[0])
             except Exception as e :
-                print(f'***Oneminusalpha failed for idx={idx}: {e}', file=sys.stderr)
+                print(f'***Oneminusalpha failed for idx={idx}: {traceback.format_exc()}',
+                      file=sys.stderr)
                 oma = -1
 
             try :
                 ranks = Ranks(chain, true_theta)
             except Exception as e :
-                print(f'***Ranks failed for idx={idx}: {e}', file=sys.stderr)
+                print(f'***Ranks failed for idx={idx}: {traceback.format_exc()}',
+                      file=sys.stderr)
                 ranks = np.full(chain.shape[-1], -1)
             ranks_str = ' '.join(map(lambda s: f'{s:.8f}', ranks))
             line = f'{oma:.8f} {ranks_str} {line}'
@@ -90,7 +95,8 @@ class Workers :
             with open(self.summary_fname, 'a') as f :
                 f.write(f'{idx:5} {line}\n')
         except Exception as e :
-            print(f'***Writing line to file failed for idx={idx}: {e}', file=sys.stderr)
+            print(f'***Writing line to file failed for idx={idx}: {traceback.format_exc()}',
+                  file=sys.stderr)
         finally :
             lock.release()
 
@@ -114,6 +120,17 @@ if __name__ == '__main__' :
     # otherwise, it really only makes sense if we use a fraction of these
     # note that we make use of the fact that the samples have already been filtered to discard zero prior
     obs_indices = rng.choice(obs_indices, size=len(obs_indices), replace=False, p=prior_sims)
+
+    # for testing
+    if OBS_CASE.startswith('cosmo_varied') and 'mean_emulator_subsample' in S :
+        print('*** Doing the test in which we test on different augmentations than trained for!',
+              file=sys.stderr)
+        subsample = S['mean_emulator_subsample']
+        nseeds = Data().get_nseeds(OBS_CASE)
+        used_seeds = np.random.default_rng(subsample)\
+                         .choice(nseeds, size=subsample, replace=False)
+        obs_indices = list(filter(lambda idx: (idx % nseeds) not in used_seeds, obs_indices))
+
 
     # some random number so different slurm jobs don't interfere
     rnd = rng.integers(2**63)

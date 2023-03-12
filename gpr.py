@@ -29,9 +29,11 @@ class GPR :
         y = data.get_datavec('cosmo_varied')
 
         if subsample is not None :
-            rng = np.random.default_rng(subsample) # make this reproducible
             assert y.shape[1] == data.get_nseeds('cosmo_varied')
-            select = rng.choice(y.shape[1], size=subsample, replace=False)
+            # NOTE the implementation of this random sampling is duplicated in
+            #      trial_chains.py, so be careful!
+            select = np.random.default_rng(subsample)\
+                        .choice(y.shape[1], size=subsample, replace=False)
             y = y[:, select, ...]
 
         y = reduction(y, axis=1) / self.yfid[None, ...] - 1
