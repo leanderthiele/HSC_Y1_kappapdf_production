@@ -38,9 +38,10 @@ for run_hash, run_info in stat_runs.items() :
     # coverage = np.array([np.count_nonzero(oma<e) for e in edges_qq]) / len(oma)
 
     label = stat_make_label(run_hash, run_info)
-    ax_qq.hist(oma, bins=edges_qq, histtype='step', cumulative=True, density=True,
+    ax_qq.hist(oma, bins=edges_qq, histtype='step', cumulative=False, density=False,
                label=label)
-    ax_ra.hist(ranks, bins=edges_ra, histtype='step', density=True,
+
+    ax_ra.hist(ranks, bins=edges_ra, histtype='step', density=False,
                label=label)
 
 ax_qq.axline((0, 0), slope=1, color='grey', linestyle='dashed')
@@ -52,7 +53,7 @@ ax_ra.set_ylim(0, None)
 
 ax_qq.legend(loc='center right', frameon=False)
 ax_qq.set_xlabel('confidence level')
-ax_qq.set_ylabel('empirical coverage')
+ax_qq.set_ylabel('number of chains')
 ax_qq.text(0.05, 0.95, 'underconfident', va='top', ha='left', transform=ax_qq.transAxes) 
 ax_qq.text(0.95, 0.05, 'overconfident', va='bottom', ha='right', transform=ax_qq.transAxes)
 
