@@ -15,9 +15,9 @@ runs = {
         'b8f4e40091ee24e646bb879d225865f6': \
              {
               'fiducial': 'fiducial',
-        #      'mbias/mbias_plus': 'mbias_plus',
-        #      'mbias/mbias_minus': 'mbias_minus',
-        #      'fiducial-baryon': 'baryon',
+              'mbias/mbias_plus': 'mbias_plus',
+              'mbias/mbias_minus': 'mbias_minus',
+              'fiducial-baryon': 'baryon',
              },
 
         # PDF baseline, all fine (shifts within 0.1 sigma)
@@ -42,16 +42,16 @@ runs = {
 
         # PDF + PS, with the point where compression derivatives are evaluated shifted
         # by +0.05 in both directions
-        '5ae39f509acb63122ff1b8b9f2baa589': { 'fiducial': 'fiducial' },
+        # '5ae39f509acb63122ff1b8b9f2baa589': { 'fiducial': 'fiducial' },
 
         # same but shift = -0.05
         # '6e8363dcd1644fdc55c7dee18e98cdd5': { 'fiducial': 'fiducial' },
 
-        # use only half the cosmo varied augmenttations when estimating mean emulator
-        'e23a7da97c82e388c290089405629e2e': { 'fiducial': 'fiducial' },
+        # use only half the cosmo varied augmentations when estimating mean emulator
+        # 'e23a7da97c82e388c290089405629e2e': { 'fiducial': 'fiducial' },
 
         # rbf_length_scale = 3
-        'b1820713b3b511d2c9e67c482b07e1b2': { 'fiducial': 'fiducial' },
+        # 'b1820713b3b511d2c9e67c482b07e1b2': { 'fiducial': 'fiducial' },
        }
 
 def make_label (run_hash, bias_info) :
@@ -65,6 +65,10 @@ centers = 0.5 * (edges[1:] + edges[:-1])
 fine_centers = np.linspace(*S8_range, num=500)
 
 fig, ax = plt.subplots(figsize=(5, 5))
+fig_bars, ax_bars = plt.subplots(figsize=(5, 5))
+
+# this is just some running index
+ycoord = 0
 
 for ii, (run_hash, bias_cases) in enumerate(runs.items()) :
     
@@ -94,9 +98,18 @@ for ii, (run_hash, bias_cases) in enumerate(runs.items()) :
         logh -= np.max(logh)
         h = np.exp(logh)
 
+        label = make_label(run_hash, bias_info)
+
         ax.plot(fine_centers, h,
                 linestyle=default_linestyles[ii], color=default_colors[jj],
-                label=make_label(run_hash, bias_info))
+                label=label)
+
+        ax_bars.errorbar([np.median(means), ], [ycoord,], xerr=this_std,
+                         label=label, marker=default_markers[ii], color=default_colors[jj])
+        ax_bars.text(0.9, ycoord, label, ha='left', va='center', transform=ax_bars.transData)
+        if ycoord == 0 :
+            ax_bars.axvline(np.median(means), color='grey', linestyle='dashed')
+        ycoord += 1
 
     std = np.median(all_std)
     print(f'std = {std:.3f} [{run_hash[:4]}]')
@@ -109,4 +122,8 @@ ax.set_xlim(*S8_range)
 ax.set_ylim(0, None)
 ax.legend(frameon=False)
 
+ax_bars.set_xlabel('$S_8$')
+ax_bars.set_yticks([])
+
 savefig(fig, 'bias_1d')
+savefig(fig_bars, 'bias_bars')

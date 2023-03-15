@@ -19,4 +19,5 @@ def savefig (fig, name) :
 
 # type : list
 default_colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
-default_linestyles = ['-','--','-.',':']
+default_linestyles = ['-', '--', '-.', ':']
+default_markers = ['o', 'x', 's', ]
