@@ -15,9 +15,11 @@ runs = {
         'b8f4e40091ee24e646bb879d225865f6': \
              {
               'fiducial': 'fiducial',
-              'mbias/mbias_plus': 'mbias_plus',
-              'mbias/mbias_minus': 'mbias_minus',
-              'fiducial-baryon': 'baryon',
+              'mbias/mbias_plus': '$\Delta m+$',
+              'mbias/mbias_minus': '$\Delta m-$',
+              'fiducial-baryon': 'baryons',
+              'photoz/frankenz': 'photo-$z$ {\\tt frankenz}',
+              'photoz/mizuki': 'photo-$z$_{\\tt mizuki}',
              },
 
         # PDF baseline, all fine (shifts within 0.1 sigma)
@@ -29,6 +31,12 @@ runs = {
         #     'mbias/mbias_plus': 'mbias_plus',
         #     'mbias/mbias_minus': 'mbias_minus',
         #     'fiducial-baryon': 'baryon',
+            },
+
+        # PS baseline
+        #'68c282161ba83a2267303b9ea1500119': \
+        #    {
+        #     'fiducial': 'fiducial',
         #    },
 
         # PDF one more low bin
@@ -55,7 +63,8 @@ runs = {
        }
 
 def make_label (run_hash, bias_info) :
-    return f'$\\tt{{ {run_hash[:4]} }}$: {bias_info}'
+#    return f'$\\tt{{ {run_hash[:4]} }}$: {bias_info}'
+    return bias_info
 
 S8_range = [0.45, 1.05]
 S8_fid = Data().get_cosmo('fiducial')[0]
