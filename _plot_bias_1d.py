@@ -18,8 +18,8 @@ runs = {
               'mbias/mbias_plus': '$\Delta m+$',
               'mbias/mbias_minus': '$\Delta m-$',
               'fiducial-baryon': 'baryons',
-              'photoz/frankenz': 'photo-$z$ {\\tt frankenz}',
-              'photoz/mizuki': 'photo-$z$_{\\tt mizuki}',
+              'photoz/frankenz': 'photo-$z$ ${\\tt frankenz}$',
+              'photoz/mizuki': 'photo-$z$ ${\\tt mizuki}$',
              },
 
         # PDF baseline, all fine (shifts within 0.1 sigma)
@@ -31,7 +31,7 @@ runs = {
         #     'mbias/mbias_plus': 'mbias_plus',
         #     'mbias/mbias_minus': 'mbias_minus',
         #     'fiducial-baryon': 'baryon',
-            },
+        #    },
 
         # PS baseline
         #'68c282161ba83a2267303b9ea1500119': \
@@ -74,10 +74,11 @@ centers = 0.5 * (edges[1:] + edges[:-1])
 fine_centers = np.linspace(*S8_range, num=500)
 
 fig, ax = plt.subplots(figsize=(5, 5))
-fig_bars, ax_bars = plt.subplots(figsize=(5, 5))
+fig_bars, ax_bars = plt.subplots(figsize=(2, 5))
 
 # this is just some running index
 ycoord = 0
+fid_x = None
 
 for ii, (run_hash, bias_cases) in enumerate(runs.items()) :
     
@@ -94,6 +95,7 @@ for ii, (run_hash, bias_cases) in enumerate(runs.items()) :
         means = means[where_unique]
         stds = stds[where_unique]
 
+        this_mean = np.median(means)
         this_std = np.median(stds)
         all_std.append(this_std)
 
@@ -113,12 +115,14 @@ for ii, (run_hash, bias_cases) in enumerate(runs.items()) :
                 linestyle=default_linestyles[ii], color=default_colors[jj],
                 label=label)
 
-        ax_bars.errorbar([np.median(means), ], [ycoord,], xerr=this_std,
-                         label=label, marker=default_markers[ii], color=default_colors[jj])
-        ax_bars.text(0.9, ycoord, label, ha='left', va='center', transform=ax_bars.transData)
+        ax_bars.errorbar([this_mean, ], [ycoord,], xerr=this_std,
+                         label=label, marker='^', color=black)
         if ycoord == 0 :
-            ax_bars.axvline(np.median(means), color='grey', linestyle='dashed')
-        ycoord += 1
+            ax_bars.axvline(this_mean, color='grey', linestyle='dashed')
+            fid_x = this_mean
+        #ax_bars.text(0.9, ycoord, label, ha='left', va='center', transform=ax_bars.transData)
+        ax_bars.text(fid_x+1e-3, ycoord, label, ha='left', va='bottom')
+        ycoord -= 1
 
     std = np.median(all_std)
     print(f'std = {std:.3f} [{run_hash[:4]}]')
@@ -131,6 +135,8 @@ ax.set_xlim(*S8_range)
 ax.set_ylim(0, None)
 ax.legend(frameon=False)
 
+for s in ['top', 'left', 'right', ] :
+    ax_bars.spines[s].set_visible(False)
 ax_bars.set_xlabel('$S_8$')
 ax_bars.set_yticks([])
 
