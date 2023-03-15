@@ -31,17 +31,17 @@ lstsq approaches the gpr result as N is increased to relatively large (~20)
 
 S = {
      # pdf settings, if not included we do not use pdf
-     'pdf': {
-             'unitstd': True,
-             'log': True,
-             'zs': [1, 2, 3, ],
-             'smooth': [2, 5, ],
-             'rebin': 1,
-             'low_cut': 3,
-             'high_cut': 0,
-             'delete': 9, # delete one bin to prevent ill-conditioned covariance from sum constraint
-             'cov_mode': 'gpr', # tried other things here and gpr is the only that works
-            },
+     #'pdf': {
+     #        'unitstd': True,
+     #        'log': True,
+     #        'zs': [1, 2, 3, ],
+     #        'smooth': [2, 5, ],
+     #         'rebin': 1,
+     #        'low_cut': 3,
+     #        'high_cut': 0,
+     #        'delete': 9, # delete one bin to prevent ill-conditioned covariance from sum constraint
+     #        'cov_mode': 'gpr', # tried other things here and gpr is the only that works
+     #       },
      
      # power spectrum settings, if not included we do not use power spectrum
      'ps': {
@@ -89,7 +89,7 @@ S = {
      # to test how sensitive we are to the number of realizations we have for
      # the cosmo varieds when constructing the emulator for the mean
      # the augmentations used have indices default_rng(subsample).choice(...)
-     'mean_emulator_subsample': 25,
+     # 'mean_emulator_subsample': 25,
 
      # RBF length scale for emulator, we found 3.0 to work best in cross-validation
      # 'rbf_length_scale': 3.0,

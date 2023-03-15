@@ -18,18 +18,26 @@ runs = {
         #      'mbias/mbias_plus': 'mbias_plus',
         #      'mbias/mbias_minus': 'mbias_minus',
         #      'fiducial-baryon': 'baryon',
+        #      'photoz/frankenz': 'photoz_frankenz',
+        #      'photoz/mizuki': 'photoz_mizuki',
              },
 
         # PDF baseline, all fine (shifts within 0.1 sigma)
         # interesting: width of the posterior depends on mbias:
         #      larger mbias -> tighter posterior. Can we explain this?
-        #'befab23d6ee10fe971a5ad7118957c9c': \
-        #    {
-        #     'fiducial': 'fiducial',
+        'befab23d6ee10fe971a5ad7118957c9c': \
+            {
+             'fiducial': 'fiducial',
         #     'mbias/mbias_plus': 'mbias_plus',
         #     'mbias/mbias_minus': 'mbias_minus',
         #     'fiducial-baryon': 'baryon',
-        #    },
+            },
+
+        # PS baseline
+        '68c282161ba83a2267303b9ea1500119': \
+            {
+             'fiducial': 'fiducial',
+            },
 
         # PDF one more low bin
         # still fine, but improvement in error bar is very small (0.102 vs 0.103)
@@ -42,16 +50,16 @@ runs = {
 
         # PDF + PS, with the point where compression derivatives are evaluated shifted
         # by +0.05 in both directions
-        '5ae39f509acb63122ff1b8b9f2baa589': { 'fiducial': 'fiducial' },
+        # '5ae39f509acb63122ff1b8b9f2baa589': { 'fiducial': 'fiducial' },
 
         # same but shift = -0.05
         # '6e8363dcd1644fdc55c7dee18e98cdd5': { 'fiducial': 'fiducial' },
 
         # use only half the cosmo varied augmenttations when estimating mean emulator
-        'e23a7da97c82e388c290089405629e2e': { 'fiducial': 'fiducial' },
+        # 'e23a7da97c82e388c290089405629e2e': { 'fiducial': 'fiducial' },
 
         # rbf_length_scale = 3
-        'b1820713b3b511d2c9e67c482b07e1b2': { 'fiducial': 'fiducial' },
+        # 'b1820713b3b511d2c9e67c482b07e1b2': { 'fiducial': 'fiducial' },
        }
 
 def make_label (run_hash, bias_info) :
