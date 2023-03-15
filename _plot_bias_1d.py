@@ -15,11 +15,11 @@ runs = {
         'b8f4e40091ee24e646bb879d225865f6': \
              {
               'fiducial': 'fiducial',
-              'mbias/mbias_plus': '$\Delta m+$',
-              'mbias/mbias_minus': '$\Delta m-$',
+              'mbias/mbias_plus': '$\Delta m$\n $+1\%$',
+              'mbias/mbias_minus': '$\Delta m$\n $-1\%$',
               'fiducial-baryon': 'baryons',
-              'photoz/frankenz': 'photo-$z$ ${\\tt frankenz}$',
-              'photoz/mizuki': 'photo-$z$ ${\\tt mizuki}$',
+              'photoz/frankenz': 'photo-$z$\n ${\\tt frankenz}$',
+              'photoz/mizuki': 'photo-$z$\n ${\\tt mizuki}$',
              },
 
         # PDF baseline, all fine (shifts within 0.1 sigma)

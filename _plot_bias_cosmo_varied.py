@@ -46,9 +46,10 @@ avg_bias = np.array(avg_bias)
 
 fig, ax = plt.subplots(figsize=(3, 5))
 vmax = 1 # np.max(np.fabs(avg_bias))
-im = ax.scatter(*theta[uniq_cosmo_indices].T, c=avg_bias, vmin=-vmax, vmax=vmax, cmap='seismic')
+im = ax.scatter(*theta[uniq_cosmo_indices].T, c=avg_bias, vmin=-vmax, vmax=vmax,
+                cmap='seismic', edgecolors=black)
 for idx, b, n in zip(uniq_cosmo_indices, avg_bias, N_points) :
-    ax.text(*theta[idx],
+    ax.text(theta[idx][0], theta[idx][1]+3e-3,
             # f'{b:.2f} {n:d}',
             f'{b:.2f}',
             va='bottom', ha='center',
@@ -56,12 +57,13 @@ for idx, b, n in zip(uniq_cosmo_indices, avg_bias, N_points) :
 
 divider = make_axes_locatable(ax)
 # cax = divider.append_axes('right', size='5%', pad=0.05)
-cax = divider.append_axes('top', size='5%', pad=0.05)
-cbar = plt.colorbar(im, cax=cax, location='top')
+cax = divider.append_axes('top', size='5%', pad=0.6)
+cbar = plt.colorbar(im, cax=cax, orientation='horizontal')
 cbar.set_label('$\Delta S_8 / \sigma(S_8)$')
 
 ax.set_xlabel('$S_8$')
 ax.set_ylabel('$\Omega_m$')
+ax.set_yticks([0.2, 0.3, 0.4, ])
 # ax.set_title(f'{run_hash[:4]}')
 
 savefig(fig, 'bias_cosmo_varied')

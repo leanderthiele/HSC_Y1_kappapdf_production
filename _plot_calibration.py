@@ -14,7 +14,7 @@ Nbins_ra = 20
 edges_qq, edges_ra = [np.linspace(0, 1, num=Nbins+1) for Nbins in [Nbins_qq, Nbins_ra, ]]
 
 fig_qq, ax_qq = plt.subplots(figsize=(5, 5))
-fig_ra, ax_ra = plt.subplots(figsize=(5, 5))
+fig_ra, ax_ra = plt.subplots(figsize=(5, 3))
 
 for run_hash, run_info in stat_runs.items() :
     
@@ -44,7 +44,7 @@ for run_hash, run_info in stat_runs.items() :
     ax_ra.hist(ranks, bins=edges_ra, histtype='step', density=False,
                label=label)
 
-ax_qq.axline((0, 0), slope=1, color='grey', linestyle='dashed')
+# ax_qq.axline((0, 0), slope=1, color='grey', linestyle='dashed')
 ax_qq.set_xlim(0, 1)
 ax_qq.set_ylim(0, None)
 
@@ -58,7 +58,7 @@ ax_qq.set_ylabel('number of chains')
 # ax_qq.text(0.95, 0.05, 'overconfident', va='bottom', ha='right', transform=ax_qq.transAxes)
 
 ax_ra.legend(loc='upper left', frameon=False)
-ax_ra.set_xlabel('fractional position in chain')
+ax_ra.set_xlabel('fractional rank of true $S_8$ within MCMC samples')
 ax_ra.set_ylabel('number of chains')
 
 savefig(fig_qq, 'calibration_qq')
