@@ -73,12 +73,12 @@ class Workers :
         if OBS_CASE.startswith('cosmo_varied') :
             true_theta = result['true_theta']
             try :
-                # doesn't make sense otherwise
-                oma = Oneminusalpha(chain[:, 0], true_theta[0])
+                oma, xmap = Oneminusalpha(chain[:, 0], true_theta[0])
             except Exception as e :
                 print(f'***Oneminusalpha failed for idx={idx}: {traceback.format_exc()}',
                       file=sys.stderr)
                 oma = -1
+                xmap = float('nan')
 
             try :
                 ranks = Ranks(chain, true_theta)
@@ -87,7 +87,7 @@ class Workers :
                       file=sys.stderr)
                 ranks = np.full(chain.shape[-1], -1)
             ranks_str = ' '.join(map(lambda s: f'{s:.8f}', ranks))
-            line = f'{oma:.8f} {ranks_str} {line}'
+            line = f'{oma:.8f} {ranks_str} {line} {xmap}'
         
         # make sure we don't mess up the output
         lock.acquire()
@@ -143,7 +143,7 @@ if __name__ == '__main__' :
         # this is for getting calibration checks
         summary_fname = f'{WRKDIR}/coverage_data_{rnd}.dat'
         with open(summary_fname, 'w') as f :
-            f.write('# index, oneminusalpha, ranks..., mean, std\n')
+            f.write('# index, oneminusalpha, ranks..., mean, std, map(S8)\n')
     else :
         # this is for getting bias checks
         summary_fname = f'{WRKDIR}/bias_data_{rnd}.dat'

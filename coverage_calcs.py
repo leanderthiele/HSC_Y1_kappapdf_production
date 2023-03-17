@@ -47,10 +47,10 @@ def Oneminusalpha (samples, true_theta) :
         sln = basinhopping(nll, x0, T=0.1, niter=10, minimizer_kwargs={'bounds': [(xlo, xhi), ]})
     except ValueError : # rare case
         print(f'*** basinhopping failed', file=sys.stderr)
-        return -1
+        return -1, float('nan')
 
-    xmax = sln.x
-    side = 'l' if true_theta<xmax else 'r'
+    xmap = sln.x
+    side = 'l' if true_theta<xmap else 'r'
     ytarg = nll(true_theta)
     edge = prior[1 if side=='l' else 0]
     if nll(edge) < ytarg :
@@ -58,16 +58,16 @@ def Oneminusalpha (samples, true_theta) :
         xsln = edge
     else :
         ftarg = lambda x : ytarg - nll(x)
-        bounds = (xmax, np.max(samples)) if side=='l' else (np.min(samples), xmax)
+        bounds = (xmap, np.max(samples)) if side=='l' else (np.min(samples), xmap)
         try :
             sln = root_scalar(ftarg, bracket=bounds)
             xsln = sln.root
         except Exception as e :
             if str(e) == 'f(a) and f(b) must have different signs' :
                 # extremely rare case in which true_theta is exactly at the maximum posterior
-                return 0.0
+                return 0.0, xmap
             print(e, file=sys.stderr)
-            return -1
+            return -1, xmap
 
     xmin, xmax = (true_theta, xsln) if side=='l' else (xsln, true_theta)
-    return np.sum((samples>xmin)*(samples<xmax)) / len(samples)
+    return np.sum((samples>xmin)*(samples<xmax)) / len(samples), xmap
