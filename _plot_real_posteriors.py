@@ -52,14 +52,14 @@ for run_hash, run_info in real_runs.items() :
     kde = KernelDensity(kernel='epanechnikov', bandwidth=0.03 if 'C_\ell' not in run_info else 0.01)\
                 .fit(S8.reshape(-1, 1))
 
-    nll = lambda x_ : -kde.score_samples(np.array([[x]]).reshape(-1, 1))
-    sln = basinhopping(nll, avg, T=0.1, niter=10, minimizer_kwargs={'bounds': [(0.6, 0.9), ]})
+    nll = lambda x_ : -kde.score_samples(np.array([[x_]]).reshape(-1, 1))
+    sln = basinhopping(nll, 0.8, T=0.1, niter=10, minimizer_kwargs={'bounds': [(0.7, 0.9), ]})
     S8_map = sln.x.item()
     S8_hi = np.quantile(S8, 0.84)
     S8_lo = np.quantile(S8, 0.16)
     delta_hi = S8_hi - S8_map
     delta_lo = S8_map - S8_lo
-    print(f'{run_hash[:4]}: S8 = {S8_map:.4f} +{delta_hi:.4f} -{delta_lo:.4f} [label]'
+    print(f'{run_hash[:4]}: S8 = {S8_map:.4f} +{delta_hi:.4f} -{delta_lo:.4f} [{label}]')
 
     logh = kde.score_samples(x.reshape(-1, 1))
     logh -= np.max(logh)
