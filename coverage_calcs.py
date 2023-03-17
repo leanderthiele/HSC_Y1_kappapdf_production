@@ -49,7 +49,7 @@ def Oneminusalpha (samples, true_theta) :
         print(f'*** basinhopping failed', file=sys.stderr)
         return -1, float('nan')
 
-    xmap = sln.x
+    xmap = sln.x.item()
     side = 'l' if true_theta<xmap else 'r'
     ytarg = nll(true_theta)
     edge = prior[1 if side=='l' else 0]
