@@ -1,6 +1,7 @@
 import numpy as np
 from matplotlib import pyplot as plt
 
+from scipy.optimize import basinhopping
 from sklearn.neighbors import KernelDensity
 
 from _plot_style import *
@@ -37,6 +38,8 @@ prior = (0.50, 1.00)
 x = np.linspace(*prior, num=500)
 
 for run_hash, run_info in real_runs.items() :
+
+    label = make_label(run_hash, run_info)
     
     with np.load(f'real_chain_{run_hash}.npz') as f :
         chain = f['chain']
@@ -44,15 +47,24 @@ for run_hash, run_info in real_runs.items() :
 
     avg = np.mean(S8)
     std = np.std(S8)
-    print(f'{run_hash[:4]}: {avg:.3f} +- {std:.3f}')
+#    print(f'{run_hash[:4]}: {avg:.3f} +- {std:.3f}')
     
     kde = KernelDensity(kernel='epanechnikov', bandwidth=0.03 if 'C_\ell' not in run_info else 0.01)\
                 .fit(S8.reshape(-1, 1))
+
+    nll = lambda x_ : -kde.score_samples(np.array([[x]]).reshape(-1, 1))
+    sln = basinhopping(nll, avg, T=0.1, niter=10, minimizer_kwargs={'bounds': [(0.6, 0.9), ]})
+    S8_map = sln.x.item()
+    S8_hi = np.quantile(S8, 0.84)
+    S8_lo = np.quantile(S8, 0.16)
+    delta_hi = S8_hi - S8_map
+    delta_lo = S8_map - S8_lo
+    print(f'{run_hash[:4]}: S8 = {S8_map:.4f} +{delta_hi:.4f} -{delta_lo:.4f} [label]'
+
     logh = kde.score_samples(x.reshape(-1, 1))
     logh -= np.max(logh)
     h = np.exp(logh)
 
-    label = make_label(run_hash, run_info)
     ax.plot(x, h, label=label)
 
 for ii, (label, (avg, std)) in enumerate(compare.items()) :
