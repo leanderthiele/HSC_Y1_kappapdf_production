@@ -65,7 +65,9 @@ for run_hash, run_info in real_runs.items() :
     logh -= np.max(logh)
     h = np.exp(logh)
 
-    ax.plot(x, h, label=label)
+    new_label = f'{label}, ${S8_map}:.3f^{{+ {delta_hi:.3f} }}_{{- {delta_lo:.3f} }}$'
+
+    ax.plot(x, h, label=new_label)
 
 for ii, (label, (avg, std)) in enumerate(compare.items()) :
     if COMPARE_STYLE == 'curves' :
