@@ -6,7 +6,7 @@ from _plot_style import *
 
 S8, Om = Data().get_cosmo('cosmo_varied').T
 
-prior = { 'S8': (0.45, 1.05), 'Om': (0.20, 0.40), }
+prior = { 'S8': (0.50, 1.00), 'Om': (0.20, 0.40), }
 
 fig, ax = plt.subplots(figsize=(5,2.5))
 

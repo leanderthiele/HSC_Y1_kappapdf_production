@@ -57,7 +57,7 @@ for ii, (a, idx) in enumerate(zip(ax, use_indices)) :
         assert all(close(t1, t2) for t1, t2 in zip(_true_theta, [true_S8, true_Om]))
 
         corner.corner(chain, labels=['$S_8$', '$\Omega_m$', ],
-                      range=[(0.45, 1.05), (0.20, 0.40)],
+                      range=[(0.50, 1.00), (0.20, 0.40)],
                       color=default_colors[ii],
                       fig=subfig,
                       plot_datapoints=False, plot_density=False, no_fill_contours=True,

@@ -21,11 +21,15 @@ ROOT = '/scratch/gpfs/lthiele/hsc_chains'
 
 # this is the test proposed by Jia: train only on 25 cosmo varied augments
 # and test on the other 25
-run_hash = 'e23a7da97c82e388c290089405629e2e'
+# run_hash = 'e23a7da97c82e388c290089405629e2e'
+
+# same as e23a but with tighter S8 prior and MAP available
+run_hash = '9d56790a0f55a6885899ec32284b91bd'
 
 fnames = glob(f'{ROOT}/cosmo_varied_{run_hash}/coverage_data_[0-9]*.dat')
 indices = np.concatenate([np.loadtxt(fname, usecols=(0, ), dtype=int) for fname in fnames])
-mean, std = np.concatenate([np.loadtxt(fname, usecols=(4, 5)) for fname in fnames], axis=0).T
+# TODO this only works for the new runs where MAP is available
+mean, std = np.concatenate([np.loadtxt(fname, usecols=(6, 5)) for fname in fnames], axis=0).T
 _, select = np.unique(indices, return_index=True)
 indices = indices[select]
 mean = mean[select]

@@ -31,26 +31,27 @@ lstsq approaches the gpr result as N is increased to relatively large (~20)
 
 S = {
      # pdf settings, if not included we do not use pdf
-     #'pdf': {
-     #        'unitstd': True,
-     #        'log': True,
-     #        'zs': [1, 2, 3, ],
-     #        'smooth': [2, 5, ],
-     #         'rebin': 1,
-     #        'low_cut': 3,
-     #        'high_cut': 0,
-     #        'delete': 9, # delete one bin to prevent ill-conditioned covariance from sum constraint
-     #        'cov_mode': 'gpr', # tried other things here and gpr is the only that works
-     #       },
+     'pdf': {
+             'unitstd': True,
+             'log': True,
+             'zs': [1, 2, 3, ],
+             'smooth': [2, 3, 5, ],
+             'rebin': 1,
+             'low_cut': 3,
+             'high_cut': 0,
+             'delete': 9, # delete one bin to prevent ill-conditioned covariance from sum constraint
+             'cov_mode': 'gpr', # tried other things here and gpr is the only that works
+            },
      
      # power spectrum settings, if not included we do not use power spectrum
-     'ps': {
-            'rebin': 1,
-            'zs': [0, ],
-            'low_cut': 4,
-            'high_cut': 6,
-            'cov_mode': 'fixed',
-           },
+     # 'ps': {
+     #        'rebin': 1,
+     #        # 'zs': [0, ],
+     #        'zs': [1, 2, 3, ],
+     #        'low_cut': 4,
+     #        'high_cut': 6,
+     #        'cov_mode': 'fixed',
+     #       },
 
      # this is a bit ugly but who cares (special case when MOPED in joint mode)
      # probably never used...
@@ -76,7 +77,7 @@ S = {
      # TODO might be worth decreasing the S8 upper bound a bit,
      #      since this is really the edge of the emulated space
      'prior': {
-               'S8': (0.45, 1.05),
+               'S8': (0.50, 1.00),
                # 's8': (0.60, 1.10),
                'Om': (0.20, 0.40),
               },

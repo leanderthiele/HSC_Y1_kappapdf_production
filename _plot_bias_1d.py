@@ -66,7 +66,7 @@ def make_label (run_hash, bias_info) :
 #    return f'$\\tt{{ {run_hash[:4]} }}$: {bias_info}'
     return bias_info
 
-S8_range = [0.45, 1.05]
+S8_range = [0.50, 1.00]
 S8_fid = Data().get_cosmo('fiducial')[0]
 
 edges = np.linspace(*S8_range, num=51)

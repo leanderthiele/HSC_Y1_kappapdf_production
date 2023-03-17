@@ -14,6 +14,8 @@ stat_runs = {
              'b8f4e40091ee24e646bb879d225865f6': 'PDF+$C_\ell^{\kappa\kappa}$', # cov_mode=fixed
              # 
              # '5ae39f509acb63122ff1b8b9f2baa589': 'PDF+PS, 0.05 shifted',
+             #
+             '9d56790a0f55a6885899ec32284b91bd': 'PDF+$C_\ell^{\kappa\kappa}$', # S8=0.5 ... 1.0
             }
 
 
