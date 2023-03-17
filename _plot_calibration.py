@@ -16,6 +16,8 @@ edges_qq, edges_ra = [np.linspace(0, 1, num=Nbins+1) for Nbins in [Nbins_qq, Nbi
 fig_qq, ax_qq = plt.subplots(figsize=(5, 5))
 fig_ra, ax_ra = plt.subplots(figsize=(5, 3))
 
+Nsamples = 1500
+
 for run_hash, run_info in stat_runs.items() :
     
     fnames = glob(f'{ROOT}/cosmo_varied_{run_hash}/coverage_data_[0-9]*.dat')
@@ -30,6 +32,8 @@ for run_hash, run_info in stat_runs.items() :
                                  np.loadtxt(fname, usecols=(col_offset+0, col_offset+1))
                                  for fname in fnames
                                 ], axis=0).T
+
+    assert len(ranks) == Nsamples
 
     # filter out failures (shouldn't be many)
     oma = oma[oma>0]
@@ -57,7 +61,10 @@ ax_qq.set_ylabel('number of chains')
 # ax_qq.text(0.05, 0.95, 'underconfident', va='top', ha='left', transform=ax_qq.transAxes) 
 # ax_qq.text(0.95, 0.05, 'overconfident', va='bottom', ha='right', transform=ax_qq.transAxes)
 
-ax_ra.legend(loc='upper left', frameon=False)
+avg = Nsamples / Nbins_ra
+nsigma = 2
+ax_ra.fill_between([0, 1], avg-nsigma*np.sqrt(avg), avg+nsigma*np.sqrt(avg), alpha=0.3, color='grey')
+ax_ra.legend(loc='lower left', ncol=3, frameon=False)
 ax_ra.set_xlabel('fractional rank of true $S_8$ within MCMC samples')
 ax_ra.set_ylabel('number of chains')
 

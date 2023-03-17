@@ -74,8 +74,6 @@ S = {
 
      # can switch s8 and S8 here to change the prior
      # ordering is important here!!!
-     # TODO might be worth decreasing the S8 upper bound a bit,
-     #      since this is really the edge of the emulated space
      'prior': {
                'S8': (0.50, 1.00),
                # 's8': (0.60, 1.10),
