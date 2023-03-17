@@ -25,7 +25,7 @@ def Oneminusalpha (samples, true_theta) :
     
     # approximate continuous posterior
     # choice of bandwidth is visual heuristic, but should hopefully not matter too much
-    kde = KernelDensity(kernel='epanechnikov', bandwidth=0.01*std).fit(samples.reshape(-1, 1))
+    kde = KernelDensity(kernel='epanechnikov', bandwidth=0.01).fit(samples.reshape(-1, 1))
     nll = lambda x : -kde.score_samples(np.array([[x]]).reshape(-1,1))
 
     prior = (np.min(samples), np.max(samples))
