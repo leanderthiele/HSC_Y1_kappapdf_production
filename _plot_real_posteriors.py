@@ -17,6 +17,13 @@ real_runs = {
              # 'd6f1a70dc7eae4b4f4e19dafdee50b95': 'PDF+$C_\ell^{\kappa\kappa}$', # 5, 7, 8, 10 arcmin
             }
 
+compare = {
+           'Hikage+2019 $C_\ell^{\kappa\kappa}$': (0.78, 0.0315),
+           'Hamana+2020 $\\xi_{\\pm}(\\theta)$': (0.823, 0.030),
+          }
+
+COMPARE_STYLE = 'bars' # can be 'bars', 'bands', 'curves'
+
 def make_label (run_hash, run_info) :
     return run_info
 
@@ -44,10 +51,14 @@ for run_hash, run_info in real_runs.items() :
     label = make_label(run_hash, run_info)
     ax.plot(x, h, label=label)
 
-ax.plot(x, np.exp(-0.5*((x-0.780)/0.0315)**2), color=black, linestyle='dashed',
-        label='Hikage+2019 $C_\ell^{\kappa\kappa}$')
-ax.plot(x, np.exp(-0.5*((x-0.823)/0.030)**2), color=black, linestyle='dotted',
-        label='Hamana+2020 $\\xi_{\\pm}(\\theta)$')
+for ii, (label, (avg, std)) in enumerate(compare.items()) :
+    if COMPARE_STYLE == 'curves' :
+        ax.plot(x, np.exp(-0.5*((x-avg)/std)**2), color=black, linestyle=default_linestyles[ii],
+                label=label)
+    elif COMPARE_STYLE == 'bars' :
+        y = 1.01 + 0.1*ii
+        ax.errorbar([avg, ], [y, ], xerr=std, marker='v', color='black')
+        ax.text(avg+std, y, label, ha='left', va='center', transform=ax.transData)
 
 ax.legend(loc='upper left', frameon=False)
 ax.set_xlim(*prior)
