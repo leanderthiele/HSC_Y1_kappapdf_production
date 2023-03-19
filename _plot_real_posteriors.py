@@ -16,7 +16,7 @@ COMPARE_STYLE = 'bars' # can be 'bars', 'bands', 'curves'
 prior = (0.50, 1.00)
 x = np.linspace(*prior, num=500)
 
-def PlotRealPosteriors (runs, make_label) :
+def PlotRealPosteriors (runs, make_label, have_numbers=True, all_have_Cl=False) :
 
     fig, ax = plt.subplots(figsize=(5,3))
 
@@ -32,25 +32,27 @@ def PlotRealPosteriors (runs, make_label) :
         std = np.std(S8)
     #    print(f'{run_hash[:4]}: {avg:.3f} +- {std:.3f}')
         
-        kde = KernelDensity(kernel='epanechnikov', bandwidth=0.03 if 'C_\ell' not in run_info else 0.01)\
+        kde = KernelDensity(kernel='epanechnikov',
+                            bandwidth=0.03 if 'C_\ell' not in run_info and not all_have_Cl else 0.01)\
                     .fit(S8.reshape(-1, 1))
 
-        nll = lambda x_ : -kde.score_samples(np.array([[x_]]).reshape(-1, 1))
-        sln = basinhopping(nll, 0.8, T=0.1, niter=10, minimizer_kwargs={'bounds': [(0.7, 0.9), ]})
-        S8_map = sln.x.item()
-        S8_hi = np.quantile(S8, 0.84)
-        S8_lo = np.quantile(S8, 0.16)
-        delta_hi = S8_hi - S8_map
-        delta_lo = S8_map - S8_lo
-        print(f'{run_hash[:4]}: S8 = {S8_map:.4f} +{delta_hi:.4f} -{delta_lo:.4f} [{label}]')
+        if have_numbers :
+            nll = lambda x_ : -kde.score_samples(np.array([[x_]]).reshape(-1, 1))
+            sln = basinhopping(nll, 0.8, T=0.1, niter=10,
+                               minimizer_kwargs={'bounds': [(np.min(S8)+0.02, np.max(S8)-0.02), ]})
+            S8_map = sln.x.item()
+            S8_hi = np.quantile(S8, 0.84)
+            S8_lo = np.quantile(S8, 0.16)
+            delta_hi = S8_hi - S8_map
+            delta_lo = S8_map - S8_lo
+            print(f'{run_hash[:4]}: S8 = {S8_map:.4f} +{delta_hi:.4f} -{delta_lo:.4f} [{label}]')
+            label = f'{label}, ${S8_map:.3f}^{{+ {delta_hi:.3f} }}_{{- {delta_lo:.3f} }}$'
 
         logh = kde.score_samples(x.reshape(-1, 1))
         logh -= np.max(logh)
         h = np.exp(logh)
 
-        new_label = f'{label}, ${S8_map:.3f}^{{+ {delta_hi:.3f} }}_{{- {delta_lo:.3f} }}$'
-
-        ax.plot(x, h, label=new_label)
+        ax.plot(x, h, label=label)
 
     for ii, (label, (avg, std)) in enumerate(compare.items()) :
         if COMPARE_STYLE == 'curves' :

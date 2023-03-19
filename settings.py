@@ -34,24 +34,24 @@ S = {
      'pdf': {
              'unitstd': True,
              'log': True,
-             'zs': [0, ],
-             'smooth': [2, ],
+             'zs': [1, 2, 3, ],
+             'smooth': [2, 3, 5, ],
              'rebin': 1,
              'low_cut': 3,
              'high_cut': 0,
              'delete': 9, # delete one bin to prevent ill-conditioned covariance from sum constraint
-             'cov_mode': 'fixed', # tried other things here and gpr is the only that works
+             'cov_mode': 'gpr', # tried other things here and gpr is the only that works
             },
      
      # power spectrum settings, if not included we do not use power spectrum
-     # 'ps': {
-     #        'rebin': 1,
-     #        # 'zs': [0, ],
-     #        'zs': [1, 2, 3, ],
-     #        'low_cut': 4,
-     #        'high_cut': 6,
-     #        'cov_mode': 'fixed',
-     #       },
+     'ps': {
+            'rebin': 1,
+            # 'zs': [0, ],
+            'zs': [1, 2, 3, ],
+            'low_cut': 4,
+            'high_cut': 6,
+            'cov_mode': 'fixed',
+           },
 
      # this is a bit ugly but who cares (special case when MOPED in joint mode)
      # probably never used...
@@ -60,7 +60,7 @@ S = {
      # moped settings
      'moped': {
                'deriv_mode': 'gpr', # either lstsq_N or gpr
-               'apply_to': [ ], # list means separate and then concatenated,
+               'apply_to': ['pdf', ], # list means separate and then concatenated,
                                       # 'joint' would mean on joint data vector
               },
      
