@@ -75,17 +75,18 @@ for ii, (label, (avg, std)) in enumerate(compare.items()) :
                 label=label)
     elif COMPARE_STYLE == 'bars' :
         y = 1.05 + 0.1*ii
-        ax.errorbar([avg, ], [y, ], xerr=std, marker='o', color='grey', markersize=3)
+        ax.errorbar([avg, ], [y, ], xerr=std, marker='o', color=black, markersize=3, capsize=3)
         # orient = 'r' if avg<np.mean(np.array([m for m, _ in compare.values()])) else 'l'
         orient = 'r'
         ax.text(avg+(-1 if orient=='l' else 1)*(std+0.01), y, label, fontsize='x-small',
                 ha='left' if orient=='r' else 'right', va='center',
                 transform=ax.transData)
 
-ax.legend(loc='upper left', frameon=False)
+ax.legend(loc='upper left', frameon=False, labelspacing=0.7)
 ax.set_xlim(*prior)
 ax.set_ylim(0, None)
 ax.set_xlabel('$S_8 = \sigma_8 \sqrt{\Omega_m/0.3}$')
 ax.set_yticks([])
+ax.set_ylabel('posterior $p(S_8)$')
 
 savefig(fig, 'real_posteriors')

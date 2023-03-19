@@ -8,7 +8,9 @@ if False :
     black = 'white'
 else :
     black = 'black'
+
 # plt.rcParams.update({'font.size': 20})
+# plt.rc('text', usetex=True)
 
 def savefig (fig, name) :
     fmt = 'png'
