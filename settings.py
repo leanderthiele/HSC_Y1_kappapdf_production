@@ -34,8 +34,8 @@ S = {
      'pdf': {
              'unitstd': True,
              'log': True,
-             'zs': [1, 2, 3, ],
-             'smooth': [2, 3, 5, ],
+             'zs': [0, ],
+             'smooth': [2, ],
              'rebin': 1,
              'low_cut': 3,
              'high_cut': 0,
@@ -60,7 +60,7 @@ S = {
      # moped settings
      'moped': {
                'deriv_mode': 'gpr', # either lstsq_N or gpr
-               'apply_to': ['pdf', ], # list means separate and then concatenated,
+               'apply_to': [ ], # list means separate and then concatenated,
                                       # 'joint' would mean on joint data vector
               },
      
