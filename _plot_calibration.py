@@ -25,13 +25,15 @@ def PlotCalibration (runs, make_label) :
         with open(fnames[0], 'r') as f :
             header = f.readline().strip()
         col_offset = 1 if 'index' in header else 0
-        # do not filter for unique runs here as it improves the faithfulness of our prior
-        # sampling if the prior is non-trivial
-        # idx = np.concatenate([np.loadtxt(fname, usecols=(0,), dtype=int) for fname in fnames])
+        indices = np.concatenate([np.loadtxt(fname, usecols=(0,), dtype=int) for fname in fnames])
         oma, ranks = np.concatenate([
                                      np.loadtxt(fname, usecols=(col_offset+0, col_offset+1))
                                      for fname in fnames
                                     ], axis=0).T
+
+        _, where_unique = np.unique(indices, return_index=True)
+        oma = oma[where_unique]
+        ranks = ranks[where_unique]
 
         assert len(ranks) == Nsamples
 
