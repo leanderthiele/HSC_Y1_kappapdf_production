@@ -65,7 +65,7 @@ for run_hash, run_info in real_runs.items() :
     logh -= np.max(logh)
     h = np.exp(logh)
 
-    new_label = f'{label}, ${S8_map}:.3f^{{+ {delta_hi:.3f} }}_{{- {delta_lo:.3f} }}$'
+    new_label = f'{label}, ${S8_map:.3f}^{{+ {delta_hi:.3f} }}_{{- {delta_lo:.3f} }}$'
 
     ax.plot(x, h, label=new_label)
 
@@ -77,12 +77,12 @@ for ii, (label, (avg, std)) in enumerate(compare.items()) :
         y = 1.05 + 0.1*ii
         ax.errorbar([avg, ], [y, ], xerr=std, marker='o', color='grey', markersize=3)
         # orient = 'r' if avg<np.mean(np.array([m for m, _ in compare.values()])) else 'l'
-        orient = 'l'
-        ax.text(avg+(-1 if orient=='l' else 1)*std-0.01, y, label, fontsize='x-small',
+        orient = 'r'
+        ax.text(avg+(-1 if orient=='l' else 1)*(std+0.01), y, label, fontsize='x-small',
                 ha='left' if orient=='r' else 'right', va='center',
                 transform=ax.transData)
 
-ax.legend(loc='center left', frameon=False)
+ax.legend(loc='upper left', frameon=False)
 ax.set_xlim(*prior)
 ax.set_ylim(0, None)
 ax.set_xlabel('$S_8 = \sigma_8 \sqrt{\Omega_m/0.3}$')
