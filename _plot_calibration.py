@@ -9,11 +9,11 @@ from _plot_stat_runs import *
 ROOT = '/scratch/gpfs/lthiele/hsc_chains'
 
 # can play with the binning here
-Nbins_qq = 50
+Nbins_qq = 20
 Nbins_ra = 20
 edges_qq, edges_ra = [np.linspace(0, 1, num=Nbins+1) for Nbins in [Nbins_qq, Nbins_ra, ]]
 
-fig_qq, ax_qq = plt.subplots(figsize=(5, 5))
+fig_qq, ax_qq = plt.subplots(figsize=(5, 3))
 fig_ra, ax_ra = plt.subplots(figsize=(5, 3))
 
 Nsamples = 1500
@@ -55,15 +55,18 @@ ax_qq.set_ylim(0, None)
 ax_ra.set_xlim(0, 1)
 ax_ra.set_ylim(0, None)
 
-ax_qq.legend(loc='upper left', frameon=False)
+
+nsigma = 2
+for a, Nb in zip([ax_ra, ax_qq,], [Nbins_ra, Nbins_qq, ]) :
+    avg = Nsamples / Nb
+    a.fill_between([0, 1], avg-nsigma*np.sqrt(avg), avg+nsigma*np.sqrt(avg), alpha=0.3, color='grey')
+
+ax_qq.legend(loc='upper left', frameon=False, ncol=3)
 ax_qq.set_xlabel('confidence level')
 ax_qq.set_ylabel('number of chains')
 # ax_qq.text(0.05, 0.95, 'underconfident', va='top', ha='left', transform=ax_qq.transAxes) 
 # ax_qq.text(0.95, 0.05, 'overconfident', va='bottom', ha='right', transform=ax_qq.transAxes)
 
-avg = Nsamples / Nbins_ra
-nsigma = 2
-ax_ra.fill_between([0, 1], avg-nsigma*np.sqrt(avg), avg+nsigma*np.sqrt(avg), alpha=0.3, color='grey')
 ax_ra.legend(loc='lower left', ncol=3, frameon=False)
 ax_ra.set_xlabel('fractional rank of true $S_8$ within MCMC samples')
 ax_ra.set_ylabel('number of chains')
