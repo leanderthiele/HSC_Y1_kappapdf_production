@@ -2,7 +2,7 @@ from _plot_style import *
 from _plot_calibration import PlotCalibration
 
 bad_runs = {
-            '65fd48ca07f7aa3b36504f765f9dbf2d': 'PDF covariance fixed',
+            'edc9498884171615f40fbe07e99aee90': 'cov fixed',
            }
 
 def bad_make_label (run_hash, run_info) :

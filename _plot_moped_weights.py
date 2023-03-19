@@ -5,6 +5,10 @@ from compressed_data import CompressedData
 from _plot_style import *
 from settings import S
 
+kappa_edges = np.linspace(-4, 4, num=20)
+kappa_centers = 0.5*(kappa_edges[1:]+kappa_edges[:-1])
+def expand_vec (x) :
+
 d = CompressedData()
 
 pdf_data = None
@@ -26,15 +30,20 @@ weights = weights.reshape(*new_shape)
 datavec = datavec.reshape(*new_shape)
 effective_contribs = weights * datavec
 
-fig, ax = plt.subplots(ncols=2, figsize=(5,5))
+fig, ax = plt.subplots(nrows=2, figsize=(5,5))
 
 ax_mat = ax[0]
 ax_bins = ax[1]
 
 mat_data = np.sum(effective_contribs, axis=-1)
-bins_data = np.sum(effective_contribs.reshape(-1, effective_contribs.shape[-1]), axis=0)
+vmax = np.max(np.fabs(mat_data))
+mat_data /= vmax
 
-ax_mat.matshow(mat_data)
+bins_data = np.sum(effective_contribs.reshape(-1, effective_contribs.shape[-1]), axis=0)
+vmax = np.max(np.fabs(bins_data))
+bins_data /= vmax
+
+ax_mat.matshow(mat_data, cmap='seismic', vmin=-1, vmax=1)
 ax_bins.plot(bins_data)
 
 savefig(fig, 'moped_weights')

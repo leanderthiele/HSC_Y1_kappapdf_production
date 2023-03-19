@@ -20,7 +20,7 @@ def PlotRealPosteriors (runs, make_label) :
 
     fig, ax = plt.subplots(figsize=(5,3))
 
-    for run_hash, run_info in real_runs.items() :
+    for run_hash, run_info in runs.items() :
 
         label = make_label(run_hash, run_info)
         

@@ -73,4 +73,3 @@ def PlotCalibration (runs, make_label) :
     ax_ra.set_ylabel('number of chains')
 
     return fig_qq, fig_ra
->>>>>>> b50918897668345b96db34a0eb212eb950d1905d

@@ -44,14 +44,14 @@ S = {
             },
      
      # power spectrum settings, if not included we do not use power spectrum
-     'ps': {
-            'rebin': 1,
-            # 'zs': [0, ],
-            'zs': [1, 2, 3, ],
-            'low_cut': 4,
-            'high_cut': 6,
-            'cov_mode': 'fixed',
-           },
+     # 'ps': {
+     #        'rebin': 1,
+     #        # 'zs': [0, ],
+     #        'zs': [1, 2, 3, ],
+     #        'low_cut': 4,
+     #        'high_cut': 6,
+     #        'cov_mode': 'fixed',
+     #       },
 
      # this is a bit ugly but who cares (special case when MOPED in joint mode)
      # probably never used...
@@ -96,3 +96,6 @@ S = {
 
 import hashlib
 IDENT = hashlib.md5(f'{S}'.encode('utf-8')).hexdigest()
+
+if __name__ == '__main__' :
+    print(IDENT)
