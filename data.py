@@ -202,11 +202,10 @@ class Data :
     def _ratio_fname (self, stat, ratio_case, zs_idx) :
         """ return the ratio file name
         stat ... one of [pdf, ps, ]
-        ratio_case ... currently only baryon implemented
+        ratio_case ... baryon or IA
         zs_idx ... 0 for single_z, 1-4 otherwise
         """
         assert stat in Data.USE_STATS
-        assert ratio_case in ['baryon', ]
         assert zs_idx in [0, 1, 2, 3, 4, ]
         out = f'{Data.ROOT}/ratio_{ratio_case}'
         out = f'{out}/{stat if stat=="pdf" else "power_spectrum"}'
