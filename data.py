@@ -23,8 +23,6 @@ class Data :
               'photoz/mizuki':   210,
               'mbias/mbias_minus': 100,
               'mbias/mbias_plus':  100,
-    # TODO this one vanished, not sure if we ever needed it
-    #         'nom': NFID,
               'real': 1,
              }
     NSMOOTH_ALL = 8
@@ -156,7 +154,7 @@ class Data :
                 f = np.load(self._fname(stat, case, zs_idx, field, model))
                 if len(out) == 1 : # special case for real
                     f = f.reshape(1, *f.shape)
-                if stat == 'pdf' : # normalize TODO read this again
+                if stat == 'pdf' : # normalize
                     f = f / np.mean(np.sum(f, axis=-1), axis=0)[None, :, None]
                 out[:, ii, ...] += (area / Data.TOT_AREA) * f
         if ratio_case is not None :
