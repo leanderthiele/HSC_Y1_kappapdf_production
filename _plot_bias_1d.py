@@ -11,20 +11,6 @@ from _plot_style import *
 ROOT = '/scratch/gpfs/lthiele/hsc_chains'
 
 runs = {
-        # PDF + PS baseline, relatively ok, largest shift is mbias_minus which is 0.3 sigma
-        # 'b8f4e40091ee24e646bb879d225865f6': \
-        #      {
-        #       'fiducial': 'fiducial',
-        #       'mbias/mbias_plus': '$\Delta m = +1\,\%$',
-        #       'mbias/mbias_minus': '$\Delta m = -1\,\%$',
-        #       'fiducial-baryon': 'baryons',
-        #       'photoz/frankenz': '${\\tt frankenz}$',
-        #       'photoz/mizuki': '${\\tt mizuki}$',
-        #      },
-
-        # this is actually our new baseline, maybe want to redo the above
-        # difference is that above we are using single-z for power spectrum
-        #     and not including the 7 arcmin bin for PDF
         '9d56790a0f55a6885899ec32284b91bd': \
              {
               'fiducial': 'fiducial',
@@ -36,50 +22,9 @@ runs = {
               'fiducial-IA/032_simple': '$A_{\sf IA} = -0.32$',
               'fiducial-IA/118_simple': '$A_{\sf IA} = 1.18$',
              },
-
-
-        # PDF baseline, all fine (shifts within 0.1 sigma)
-        # interesting: width of the posterior depends on mbias:
-        #      larger mbias -> tighter posterior. Can we explain this?
-        #'befab23d6ee10fe971a5ad7118957c9c': \
-        #    {
-        #     'fiducial': 'fiducial',
-        #     'mbias/mbias_plus': 'mbias_plus',
-        #     'mbias/mbias_minus': 'mbias_minus',
-        #     'fiducial-baryon': 'baryon',
-        #    },
-
-        # PS baseline
-        #'68c282161ba83a2267303b9ea1500119': \
-        #    {
-        #     'fiducial': 'fiducial',
-        #    },
-
-        # PDF one more low bin
-        # still fine, but improvement in error bar is very small (0.102 vs 0.103)
-        # so no need to include this bin
-        # '9fe279192f2aa13b590e3367731e7a60': {  'fiducial-baryon': 'baryon', },
-
-        # PDF + PS, ps high_cut=5 instead of 6
-        # starts to shift visibly, 0.3 in units of sigma, and only small improvement in constraint
-        # '496e0da40dc63eb1faa88522765de834': { 'fiducial-baryon': 'baryon', },
-
-        # PDF + PS, with the point where compression derivatives are evaluated shifted
-        # by +0.05 in both directions
-        # '5ae39f509acb63122ff1b8b9f2baa589': { 'fiducial': 'fiducial' },
-
-        # same but shift = -0.05
-        # '6e8363dcd1644fdc55c7dee18e98cdd5': { 'fiducial': 'fiducial' },
-
-        # use only half the cosmo varied augmentations when estimating mean emulator
-        # 'e23a7da97c82e388c290089405629e2e': { 'fiducial': 'fiducial' },
-
-        # rbf_length_scale = 3
-        # 'b1820713b3b511d2c9e67c482b07e1b2': { 'fiducial': 'fiducial' },
        }
 
 def make_label (run_hash, bias_info) :
-#    return f'$\\tt{{ {run_hash[:4]} }}$: {bias_info}'
     return bias_info
 
 S8_range = [0.50, 1.00]
@@ -118,9 +63,6 @@ for ii, (run_hash, bias_cases) in enumerate(runs.items()) :
         all_std.append(this_std)
 
         print(f'delta(S8)/sigma = {(np.median(means)-S8_fid)/this_std:.2f} [{run_hash[:4]} {bias_info}]')
-
-        # h, _  = np.histogram(means, bins=edges)
-        # h = h.astype(float) / np.sum(h)
         
         kde = KernelDensity(kernel='epanechnikov', bandwidth=0.05).fit(means.reshape(-1, 1))
         logh = kde.score_samples(fine_centers.reshape(-1, 1))
@@ -138,7 +80,6 @@ for ii, (run_hash, bias_cases) in enumerate(runs.items()) :
         if ycoord == 0 :
             ax_bars.axvline(this_mean, color='grey', linestyle='dashed')
             fid_x = this_mean
-        #ax_bars.text(0.9, ycoord, label, ha='left', va='center', transform=ax_bars.transData)
         ax_bars.text(fid_x+2e-3, ycoord+1e-2, label, ha='left', va='bottom', transform=ax_bars.transData)
         ycoord -= 1
 

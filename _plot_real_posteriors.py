@@ -30,7 +30,6 @@ def PlotRealPosteriors (runs, make_label, have_numbers=True, all_have_Cl=False) 
 
         avg = np.mean(S8)
         std = np.std(S8)
-    #    print(f'{run_hash[:4]}: {avg:.3f} +- {std:.3f}')
         
         kde = KernelDensity(kernel='epanechnikov',
                             bandwidth=0.03 if 'C_\ell' not in run_info and not all_have_Cl else 0.01)\
@@ -62,7 +61,6 @@ def PlotRealPosteriors (runs, make_label, have_numbers=True, all_have_Cl=False) 
         elif COMPARE_STYLE == 'bars' :
             y = 1.05 + 0.1*ii
             ax.errorbar([avg, ], [y, ], xerr=([errs[0], ], [errs[1], ]), marker='o', color=black, markersize=3, capsize=3)
-            # orient = 'r' if avg<np.mean(np.array([m for m, _ in compare.values()])) else 'l'
             orient = 'r'
             ax.text(avg+(-1 if orient=='l' else 1)*(errs[0 if orient=='l' else 1]+0.01), y, label, fontsize='x-small',
                     ha='left' if orient=='r' else 'right', va='center',

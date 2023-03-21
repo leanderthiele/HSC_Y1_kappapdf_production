@@ -43,7 +43,7 @@ cosmo_varied_chisq = np.array(cosmo_varied_chisq)
 theta = np.array(theta) # [N, 2]
 
 fig, ax = plt.subplots(nrows=3, figsize=(7, 14))
-dof = len(ll.observation) # TODO do we have to subtract 1 here?
+dof = len(ll.observation)
 
 for ii, (a, chisq, label) in enumerate(zip(ax[:-1],
                                            [fid_chisq, cosmo_varied_chisq.flatten(), ],
