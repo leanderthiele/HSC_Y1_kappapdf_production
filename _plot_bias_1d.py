@@ -6,9 +6,8 @@ from matplotlib import pyplot as plt
 from sklearn.neighbors import KernelDensity
 
 from data import Data
+from settings import CHAIN_ROOT
 from _plot_style import *
-
-ROOT = '/scratch/gpfs/lthiele/hsc_chains'
 
 runs = {
         '9d56790a0f55a6885899ec32284b91bd': \
@@ -49,7 +48,7 @@ for ii, (run_hash, bias_cases) in enumerate(runs.items()) :
 
     for jj, (bias_case, bias_info) in enumerate(bias_cases.items()) :
         
-        pattern = f'{ROOT}/{bias_case}_{run_hash}/bias_data_[0-9]*.dat'
+        pattern = f'{CHAIN_ROOT}/{bias_case}_{run_hash}/bias_data_[0-9]*.dat'
         print(pattern)
         fnames = glob(pattern)
         indices = np.concatenate([np.loadtxt(fname, usecols=(0,), dtype=int) for fname in fnames])

@@ -3,9 +3,8 @@ from glob import glob
 import numpy as np
 from matplotlib import pyplot as plt
 
+from settings import CHAIN_ROOT
 from _plot_style import *
-
-ROOT = '/scratch/gpfs/lthiele/hsc_chains'
 
 # can play with the binning here
 Nbins_qq = 20
@@ -20,7 +19,7 @@ def PlotCalibration (runs, make_label, qq_legend_kwargs=None, ra_legend_kwargs=N
 
     for run_hash, run_info in runs.items() :
         
-        fnames = glob(f'{ROOT}/cosmo_varied_{run_hash}/coverage_data_[0-9]*.dat')
+        fnames = glob(f'{CHAIN_ROOT}/cosmo_varied_{run_hash}/coverage_data_[0-9]*.dat')
         # figure out if this is one of the old runs where we didn't have the index information
         with open(fnames[0], 'r') as f :
             header = f.readline().strip()

@@ -4,6 +4,7 @@ from matplotlib import pyplot as plt
 import corner
 
 from data import Data
+from settings import CHAIN_ROOT
 from _plot_stat_runs import *
 from _plot_style import *
 from _plot_get_test_trials import GetTestTrials
@@ -12,8 +13,6 @@ NROWS = 2
 NCOLS = 2
 
 NAX = NROWS * NCOLS
-
-ROOT = '/scratch/gpfs/lthiele/hsc_chains'
 
 # do some selection
 data = Data()
@@ -50,7 +49,7 @@ for ii, (a, idx) in enumerate(zip(ax, use_indices)) :
     new_ax[0, 1].text(0, 1, S8_text(true_S8), color=black, **S8_text_kwargs(new_ax[0, 1]))
 
     for ii, (run_hash, run_info) in enumerate(stat_runs.items()) :
-        chain_fname = f'{ROOT}/cosmo_varied_{run_hash}/chain_{idx}.npz'
+        chain_fname = f'{CHAIN_ROOT}/cosmo_varied_{run_hash}/chain_{idx}.npz'
         with np.load(chain_fname) as f :
             chain = f['chain'].reshape(-1, 2)
             _true_theta = f['true_theta']

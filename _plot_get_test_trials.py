@@ -4,8 +4,7 @@ import re
 import numpy as np
 
 from data import Data
-
-ROOT = '/scratch/gpfs/lthiele/hsc_chains'
+from settings import CHAIN_ROOT
 
 # only consider runs with these true values
 restrict = {
@@ -31,7 +30,7 @@ def GetTestTrials (run_hashes, N=None, obs_case='cosmo_varied') :
     all_avail_indices = []
     all_avail_cosmo_indices = []
     for run_hash in run_hashes :
-        chain_fnames = glob(f'{ROOT}/{obs_case.replace("~", "-")}_{run_hash}/chain_[0-9]*.npz')
+        chain_fnames = glob(f'{CHAIN_ROOT}/{obs_case.replace("~", "-")}_{run_hash}/chain_[0-9]*.npz')
         avail_indices = [int(pattern.search(chain_fname)[1]) for chain_fname in chain_fnames]
         avail_cosmo_indices = [idx//data.get_nseeds(obs_case) for idx in avail_indices]
         if obs_case.startswith('cosmo_varied') :

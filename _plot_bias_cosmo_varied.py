@@ -5,13 +5,12 @@ from matplotlib import pyplot as plt
 from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 from data import Data
+from settings import CHAIN_ROOT
 from _plot_style import *
-
-ROOT = '/scratch/gpfs/lthiele/hsc_chains'
 
 run_hash = '9d56790a0f55a6885899ec32284b91bd'
 
-fnames = glob(f'{ROOT}/cosmo_varied_{run_hash}/coverage_data_[0-9]*.dat')
+fnames = glob(f'{CHAIN_ROOT}/cosmo_varied_{run_hash}/coverage_data_[0-9]*.dat')
 indices = np.concatenate([np.loadtxt(fname, usecols=(0, ), dtype=int) for fname in fnames])
 mean, std = np.concatenate([np.loadtxt(fname, usecols=(6, 5)) for fname in fnames], axis=0).T
 _, select = np.unique(indices, return_index=True)

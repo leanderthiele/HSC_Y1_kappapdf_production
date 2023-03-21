@@ -10,12 +10,12 @@ import numpy as np
 from data import Data
 from sample import Sample, logprior
 from coverage_calcs import Oneminusalpha, Ranks
-from settings import S, IDENT
+from settings import S, IDENT, CHAIN_ROOT
 
 OBS_CASE = argv[1]
 NCORES = int(argv[2])
 
-WRKDIR = f'/scratch/gpfs/lthiele/hsc_chains/{OBS_CASE.replace("~", "-")}_{IDENT}'
+WRKDIR = f'{CHAIN_ROOT}/{OBS_CASE.replace("~", "-")}_{IDENT}'
 
 
 def get_possible_sims () :
