@@ -1,11 +1,8 @@
 import numpy as np
 
-from settings import S
+from settings import S, SIM_ROOT
 
 class Data :
-
-    # where the files are
-    ROOT = '/scratch/gpfs/lthiele/HSC_Y1_Nbody_sims'
 
     # fiducial point
     FID = {
@@ -23,8 +20,6 @@ class Data :
               'photoz/mizuki':   210,
               'mbias/mbias_minus': 100,
               'mbias/mbias_plus':  100,
-    # TODO this one vanished, not sure if we ever needed it
-    #         'nom': NFID,
               'real': 1,
              }
     NSMOOTH_ALL = 8
@@ -87,7 +82,7 @@ class Data :
         in the order S8, Om
         """
         if case.startswith('cosmo_varied') :
-            _, Om, s8 = np.loadtxt(f'{Data.ROOT}/stats_cosmo_varied/omegam_sigma8_design3.dat',
+            _, Om, s8 = np.loadtxt(f'{SIM_ROOT}/stats_cosmo_varied/omegam_sigma8_design3.dat',
                                    unpack=True)
             S8 = s8 * np.sqrt(Om / 0.3)
             return np.stack([S8, Om, ], axis=-1)
@@ -156,7 +151,7 @@ class Data :
                 f = np.load(self._fname(stat, case, zs_idx, field, model))
                 if len(out) == 1 : # special case for real
                     f = f.reshape(1, *f.shape)
-                if stat == 'pdf' : # normalize TODO read this again
+                if stat == 'pdf' : # normalize
                     f = f / np.mean(np.sum(f, axis=-1), axis=0)[None, :, None]
                 out[:, ii, ...] += (area / Data.TOT_AREA) * f
         if ratio_case is not None :
@@ -184,7 +179,7 @@ class Data :
         assert case in Data.NSEEDS.keys()
         assert zs_idx in [0, 1, 2, 3, 4, ]
         assert field in Data.FIELDS.keys()
-        out = f'{Data.ROOT}/stats_{case}'
+        out = f'{SIM_ROOT}/stats_{case}'
         out = f'{out}/{stat if stat=="pdf" else "power_spectrum"}'
         if case == 'cosmo_varied' :
             assert model is not None
@@ -207,7 +202,7 @@ class Data :
         """
         assert stat in Data.USE_STATS
         assert zs_idx in [0, 1, 2, 3, 4, ]
-        out = f'{Data.ROOT}/ratio_{ratio_case}'
+        out = f'{SIM_ROOT}/ratio_{ratio_case}'
         out = f'{out}/{stat if stat=="pdf" else "power_spectrum"}'
         out = f'{out}/{stat if stat=="pdf" else "clee"}'
         out = f'{out}_{f"z{zs_idx}" if zs_idx else "singlez"}'

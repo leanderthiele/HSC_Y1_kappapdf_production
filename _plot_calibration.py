@@ -3,9 +3,8 @@ from glob import glob
 import numpy as np
 from matplotlib import pyplot as plt
 
+from settings import CHAIN_ROOT
 from _plot_style import *
-
-ROOT = '/scratch/gpfs/lthiele/hsc_chains'
 
 # can play with the binning here
 Nbins_qq = 20
@@ -20,7 +19,7 @@ def PlotCalibration (runs, make_label, qq_legend_kwargs=None, ra_legend_kwargs=N
 
     for run_hash, run_info in runs.items() :
         
-        fnames = glob(f'{ROOT}/cosmo_varied_{run_hash}/coverage_data_[0-9]*.dat')
+        fnames = glob(f'{CHAIN_ROOT}/cosmo_varied_{run_hash}/coverage_data_[0-9]*.dat')
         # figure out if this is one of the old runs where we didn't have the index information
         with open(fnames[0], 'r') as f :
             header = f.readline().strip()
@@ -41,8 +40,6 @@ def PlotCalibration (runs, make_label, qq_legend_kwargs=None, ra_legend_kwargs=N
         oma = oma[oma>0]
         ranks = ranks[ranks>0]
 
-        # coverage = np.array([np.count_nonzero(oma<e) for e in edges_qq]) / len(oma)
-
         label = make_label(run_hash, run_info)
         ax_qq.hist(oma, bins=edges_qq, histtype='step', cumulative=False, density=False,
                    label=label)
@@ -50,7 +47,6 @@ def PlotCalibration (runs, make_label, qq_legend_kwargs=None, ra_legend_kwargs=N
         ax_ra.hist(ranks, bins=edges_ra, histtype='step', density=False,
                    label=label)
 
-    # ax_qq.axline((0, 0), slope=1, color='grey', linestyle='dashed')
     ax_qq.set_xlim(0, 1)
     ax_qq.set_ylim(0, None)
 
@@ -67,8 +63,6 @@ def PlotCalibration (runs, make_label, qq_legend_kwargs=None, ra_legend_kwargs=N
     ax_qq.legend(**qq_legend_kwargs, frameon=False)
     ax_qq.set_xlabel('confidence level')
     ax_qq.set_ylabel('number of chains')
-    # ax_qq.text(0.05, 0.95, 'underconfident', va='top', ha='left', transform=ax_qq.transAxes) 
-    # ax_qq.text(0.95, 0.05, 'overconfident', va='bottom', ha='right', transform=ax_qq.transAxes)
 
     if ra_legend_kwargs is None :
         ra_legend_kwargs = dict(loc='lower left', ncol=3)

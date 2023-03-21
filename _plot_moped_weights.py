@@ -83,7 +83,6 @@ y /= np.nanmax(y)
 l2 = ax_bins.plot(kappa_centers, y, linestyle='none', marker='x', label='data vector (shifted & scaled)')
 ax_bins.set_xlabel('$\kappa / \sigma(\kappa)$')
 ax_bins.axhline(0, color='grey', linestyle='dashed')
-# ax_bins.legend(frameon=False)
 ax_bins.text(-1, 0.8, 'data\nvector', color=plt.getp(l2[0], 'color'), va='top', ha='left',
              transform=ax_bins.transData)
 ax_bins.text(-1, -0.2, 'contribution', color=plt.getp(l1[0], 'color'), va='center', ha='left',

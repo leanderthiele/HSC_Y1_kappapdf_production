@@ -28,6 +28,8 @@ wheres lstsq tends to disagree with gpr and also is more unstable under changing
 lstsq approaches the gpr result as N is increased to relatively large (~20)
 """
 
+SIM_ROOT = '/scratch/gpfs/lthiele/HSC_Y1_Nbody_sims'
+CHAIN_ROOT = '/scratch/gpfs/lthiele/hsc_chains'
 
 S = {
      # pdf settings, if not included we do not use pdf

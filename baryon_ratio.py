@@ -4,7 +4,7 @@ from glob import glob
 
 import numpy as np
 
-ROOT = '/scratch/gpfs/lthiele/HSC_Y1_Nbody_sims'
+from settings import SIM_ROOT
 
 for stat in ['pdf_stdmap', 'pdf', 'ps', ] :
     
@@ -22,13 +22,13 @@ for stat in ['pdf_stdmap', 'pdf', 'ps', ] :
             pattern = f'{pattern}_stdmap'
             outfile = f'{outfile}_stdmap'
         pattern = f'{pattern}.npy'
-        outfile = f'{ROOT}/ratio_baryon/{outfile}.npy'
+        outfile = f'{SIM_ROOT}/ratio_baryon/{outfile}.npy'
 
         os.makedirs(os.path.dirname(outfile), exist_ok=True)
         
-        tng_dark_fnames = glob(f'{ROOT}/kappaTNG/dark/{pattern}')
+        tng_dark_fnames = glob(f'{SIM_ROOT}/kappaTNG/dark/{pattern}')
         print(f'Found {len(tng_dark_fnames)} dark files ')
-        tng_hydro_fnames = glob(f'{ROOT}/kappaTNG/hydro/{pattern}')
+        tng_hydro_fnames = glob(f'{SIM_ROOT}/kappaTNG/hydro/{pattern}')
         print(f'Found {len(tng_hydro_fnames)} hydro files')
         assert len(tng_hydro_fnames) == len(tng_dark_fnames)
 

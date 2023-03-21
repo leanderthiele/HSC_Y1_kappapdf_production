@@ -18,10 +18,6 @@ class GPR :
                       per cosmology (same at each cosmology)
         """
 
-        # TODO I think there are cases where we don't do the normalization by yfid
-        #      (because it's not possible or something)
-        #      Could be for covariance matrix
-
         self.xfid = data.get_cosmo('fiducial')
         x = self._norm_x(data.get_cosmo('cosmo_varied'))
 
