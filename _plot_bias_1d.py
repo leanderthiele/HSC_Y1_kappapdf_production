@@ -12,15 +12,31 @@ ROOT = '/scratch/gpfs/lthiele/hsc_chains'
 
 runs = {
         # PDF + PS baseline, relatively ok, largest shift is mbias_minus which is 0.3 sigma
-        'b8f4e40091ee24e646bb879d225865f6': \
+        # 'b8f4e40091ee24e646bb879d225865f6': \
+        #      {
+        #       'fiducial': 'fiducial',
+        #       'mbias/mbias_plus': '$\Delta m = +1\,\%$',
+        #       'mbias/mbias_minus': '$\Delta m = -1\,\%$',
+        #       'fiducial-baryon': 'baryons',
+        #       'photoz/frankenz': '${\\tt frankenz}$',
+        #       'photoz/mizuki': '${\\tt mizuki}$',
+        #      },
+
+        # this is actually our new baseline, maybe want to redo the above
+        # difference is that above we are using single-z for power spectrum
+        #     and not including the 7 arcmin bin for PDF
+        '9d56790a0f55a6885899ec32284b91bd': \
              {
               'fiducial': 'fiducial',
-              'mbias/mbias_plus': '$\Delta m$\n $+1\%$',
-              'mbias/mbias_minus': '$\Delta m$\n $-1\%$',
+              'mbias/mbias_plus': '$\Delta m = +1\,\%$',
+              'mbias/mbias_minus': '$\Delta m = -1\,\%$',
               'fiducial-baryon': 'baryons',
-              'photoz/frankenz': 'photo-$z$\n ${\\tt frankenz}$',
-              'photoz/mizuki': 'photo-$z$\n ${\\tt mizuki}$',
+              'photoz/frankenz': '${\\tt frankenz}$',
+              'photoz/mizuki': '${\\tt mizuki}$',
+              'fiducial-IA/032_simple': '$A_{\sf IA} = -0.32$',
+              'fiducial-IA/118_simple': '$A_{\sf IA} = 1.18$',
              },
+
 
         # PDF baseline, all fine (shifts within 0.1 sigma)
         # interesting: width of the posterior depends on mbias:
@@ -74,7 +90,7 @@ centers = 0.5 * (edges[1:] + edges[:-1])
 fine_centers = np.linspace(*S8_range, num=500)
 
 fig, ax = plt.subplots(figsize=(5, 5))
-fig_bars, ax_bars = plt.subplots(figsize=(2, 5))
+fig_bars, ax_bars = plt.subplots(figsize=(2, 4))
 
 # this is just some running index
 ycoord = 0
@@ -88,7 +104,9 @@ for ii, (run_hash, bias_cases) in enumerate(runs.items()) :
 
     for jj, (bias_case, bias_info) in enumerate(bias_cases.items()) :
         
-        fnames = glob(f'{ROOT}/{bias_case}_{run_hash}/bias_data_[0-9]*.dat')
+        pattern = f'{ROOT}/{bias_case}_{run_hash}/bias_data_[0-9]*.dat'
+        print(pattern)
+        fnames = glob(pattern)
         indices = np.concatenate([np.loadtxt(fname, usecols=(0,), dtype=int) for fname in fnames])
         means, stds = np.concatenate([np.loadtxt(fname, usecols=(1, 2, )) for fname in fnames], axis=0).T
         _, where_unique = np.unique(indices, return_index=True)
@@ -121,7 +139,7 @@ for ii, (run_hash, bias_cases) in enumerate(runs.items()) :
             ax_bars.axvline(this_mean, color='grey', linestyle='dashed')
             fid_x = this_mean
         #ax_bars.text(0.9, ycoord, label, ha='left', va='center', transform=ax_bars.transData)
-        ax_bars.text(fid_x+1e-3, ycoord, label, ha='left', va='bottom')
+        ax_bars.text(fid_x+2e-3, ycoord+1e-2, label, ha='left', va='bottom', transform=ax_bars.transData)
         ycoord -= 1
 
     std = np.median(all_std)
