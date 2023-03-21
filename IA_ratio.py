@@ -9,11 +9,11 @@ smooth_scales = [1, 2, 5, 7, 8, 10, 15, 25, ]
 
 def get_ratio (stat, zstr, IA_ampl, theta, method) :
     # output shape is [bins]
-    fid_fname = f'{ROOT}/stats_IA/{"pdf" if stat.startswith("pdf") else "clee"}_{zstr}_0_{theta}.npy'
+    fid_fname = f'{ROOT}/stats_IA/{"pdf" if stat.startswith("pdf") else "clee"}_{zstr}_0_theta_{theta}.npy'
     if not os.path.isfile(fid_fname) :
         # we don't have all smoothing scales available for IA
         return np.full(19 if stat.startswith('pdf') else 14, float('nan'))
-    var_fname = f'{ROOT}/stats_IA/{"pdf" if stat.startswith("pdf") else "clee"}_{zstr}_{IA_ampl}_{theta}.npy'
+    var_fname = f'{ROOT}/stats_IA/{"pdf" if stat.startswith("pdf") else "clee"}_{zstr}_{IA_ampl}_theta_{theta}.npy'
     x0 = np.load(fid_fname)
     x1 = np.load(var_fname)
     if method == 'simple' :
