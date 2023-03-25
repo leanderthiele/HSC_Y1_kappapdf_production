@@ -50,7 +50,7 @@ class Data :
                   {
                    stat: set(range(S[stat]['low_cut'])) \
                          | set(range(n[stat] - S[stat]['high_cut'], n[stat])) \
-                         | ( {S[stat]['delete'], } if stat=='pdf' else set() )
+                         | ( {S[stat]['delete'], } if stat=='pdf' and S[stat]['delete'] is not None else set() )
                    for stat in u
                   }
                   )()
