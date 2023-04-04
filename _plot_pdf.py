@@ -36,7 +36,7 @@ d_hsc -= offset
 
 gaussian = -0.5 * kappa**2
 
-fig, ax = plt.subplots(figsize=(5, 3))
+fig, ax = plt.subplots(figsize=(5, 2))
 
 ax.plot(kappa, d_fid, label='fiducial simulations')
 ax.errorbar(kappa, d_hsc, yerr=sigma, label='HSC Y1',

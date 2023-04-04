@@ -13,7 +13,7 @@ edges_qq, edges_ra = [np.linspace(0, 1, num=Nbins+1) for Nbins in [Nbins_qq, Nbi
 
 def PlotCalibration (runs, make_label, qq_legend_kwargs=None, ra_legend_kwargs=None) :
     fig_qq, ax_qq = plt.subplots(figsize=(5, 3))
-    fig_ra, ax_ra = plt.subplots(figsize=(5, 3))
+    fig_ra, ax_ra = plt.subplots(figsize=(5, 2))
 
     Nsamples = 1500
 
