@@ -1,5 +1,6 @@
 import numpy as np
 from matplotlib import pyplot as plt
+from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
 from scipy.optimize import basinhopping
 from sklearn.neighbors import KernelDensity
@@ -65,6 +66,19 @@ def PlotRealPosteriors (runs, make_label, have_numbers=True, all_have_Cl=False) 
             ax.text(avg+(-1 if orient=='l' else 1)*(errs[0 if orient=='l' else 1]+0.01), y, label, fontsize='x-small',
                     ha='left' if orient=='r' else 'right', va='center',
                     transform=ax.transData)
+
+    # the best-fit inset
+    h = '9d56790a0f55a6885899ec32284b91bd'
+    if h in runs.keys() :
+        y = np.load(f'deltax_{h}.npy')
+        axins = inset_axes(ax, width='35%', height='30%', loc='lower left',
+                           bbox_to_anchor=(0.05, 0.2), bbox_transform=ax.transAxes)
+        axins.plot(y, linestyle='none', marker='o')
+        axins.axhline(0, color='grey', linestyle='dashed')
+        axins.set_xticks([])
+        axins.set_yticks([-2, -1, 0, 1])
+        axins.set_ylabel('$\Delta x/\sigma$')
+
 
     ax.legend(loc='upper left', frameon=False, labelspacing=0.7)
     ax.set_xlim(*prior)
