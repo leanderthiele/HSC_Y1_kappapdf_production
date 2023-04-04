@@ -6,18 +6,25 @@ from itertools import cycle
 if False :
     plt.style.use('dark_background')
     black = 'white'
+    bg_ident = '_dark_bg'
 else :
     black = 'black'
+    bg_ident = ''
+
+if False :
+    fmt = 'png'
+    kwargs = dict(transparent=True, dpi=400)
+else :
+    fmt = 'pdf'
+    kwargs = dict()
 
 # plt.rcParams.update({'font.size': 20})
 # plt.rc('text', usetex=True)
 
 def savefig (fig, name) :
-    fmt = 'png'
-    kwargs = dict(bbox_inches='tight', transparent=False)
     outdir = '.'
 
-    fig.savefig(f'{outdir}/_plot_{name}.{fmt}', **kwargs)
+    fig.savefig(f'{outdir}/_plot{bg_ident}_{name}.{fmt}', bbox_inches='tight', **kwargs)
 
 # type : list
 default_colors = plt.rcParams['axes.prop_cycle'].by_key()['color']

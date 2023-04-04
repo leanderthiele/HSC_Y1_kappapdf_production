@@ -2,6 +2,7 @@ from glob import glob
 
 import numpy as np
 from matplotlib import pyplot as plt
+import matplotlib as mpl
 
 from sklearn.neighbors import KernelDensity
 
@@ -19,11 +20,15 @@ def PlotBias1D (runs, make_label) :
     fine_centers = np.linspace(*S8_range, num=500)
 
     fig, ax = plt.subplots(figsize=(5, 5))
-    fig_bars, ax_bars = plt.subplots(figsize=(2, 4))
+    fig_bars, ax_bars = plt.subplots(figsize=(2, 3))
 
     # this is just some running index
     ycoord = 0
     fid_x = None
+
+    cmap = mpl.cm.get_cmap('coolwarm')
+    transf = lambda x : 0.5 * (x+1)
+    get_color = lambda x : cmap(transf(x))
 
     for ii, (run_hash, bias_cases) in enumerate(runs.items()) :
         
@@ -59,11 +64,14 @@ def PlotBias1D (runs, make_label) :
                     linestyle=default_linestyles[ii], color=default_colors[jj],
                     label=label)
 
-            ax_bars.errorbar([this_mean, ], [ycoord,], xerr=this_std,
-                             label=label, marker='^', color=black)
             if ycoord == 0 :
                 ax_bars.axvline(this_mean, color='grey', linestyle='dashed')
                 fid_x = this_mean
+                fid_std = this_std
+            ax_bars.errorbar([this_mean, ], [ycoord,], xerr=this_std,
+                             label=label, marker='^',
+                             # ecolor=black if ycoord==0 else get_color((this_mean-fid_x)/this_std),
+                             color=black)
             ax_bars.text(fid_x+2e-3, ycoord+1e-2, label, ha='left', va='bottom', transform=ax_bars.transData)
             ycoord -= 1
 

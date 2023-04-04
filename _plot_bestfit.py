@@ -16,7 +16,7 @@ idx = np.argmax(lp)
 theta_bf = chain[idx]
 
 cd = CompressedData()
-real_data = cd.get_datavec('real')
+real_data = cd.get_datavec('real')[0]
 fid_data = cd.get_datavec('fiducial')
 sigma = np.std(fid_data, axis=0)
 
@@ -26,10 +26,10 @@ theory_bf = emulator(theta_bf)
 fig, ax = plt.subplots()
 
 x = np.arange(len(real_data))
-ax.errorbar(x, real_data, yerr=std, linestyle='none', marker='o', label='HSC Y1')
-ax.plot(x, theory_bf, linestyle='none', marker='^', label='best fit theory')
+ax.plot(x, (real_data - theory_bf)/sigma, linestyle='none', marker='o')
+ax.axhline(0, color='grey', linestyle='dashed')
 
 ax.set_xlabel('data vector index')
-ax.set_ylabel('data vector')
+ax.set_ylabel('$(x_{\sf HSC} - x_{\sf bestfit})/\sigma$')
 
 savefig(fig, 'bestfit')

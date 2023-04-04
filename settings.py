@@ -46,14 +46,14 @@ S = {
             },
      
      # power spectrum settings, if not included we do not use power spectrum
-     # 'ps': {
-     #        'rebin': 1,
-     #        # 'zs': [0, ],
-     #        'zs': [1, 2, 3, ],
-     #        'low_cut': 4,
-     #        'high_cut': 6,
-     #        'cov_mode': 'fixed',
-     #       },
+     'ps': {
+            'rebin': 1,
+            # 'zs': [0, ],
+            'zs': [1, 2, 3, ],
+            'low_cut': 4,
+            'high_cut': 6,
+            'cov_mode': 'fixed',
+           },
 
      # this is a bit ugly but who cares (special case when MOPED in joint mode)
      # probably never used...
@@ -78,7 +78,7 @@ S = {
      # ordering is important here!!!
      'prior': {
                'S8': (0.50, 1.00),
-               # 's8': (0.60, 1.10),
+               # 's8': (0.60, 1.00),
                'Om': (0.20, 0.40),
               },
 
