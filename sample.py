@@ -95,7 +95,9 @@ def Sample (obs_case, obs_idx) :
                                     moves=emcee.moves.StretchMove(a=5))
     sampler.run_mcmc(init_theta, S['mcmc']['nsteps'], progress=(obs_case=='real'))
 
-    chain = sampler.get_chain(thin=S['mcmc']['thin'], discard=S['mcmc']['discard'])
+    kwargs = dict(thin=S['mcmc']['thin'], discard=S['mcmc']['discard'])
+    chain = sampler.get_chain(**kwargs)
+    lp = sampler.get_log_prob(**kwargs)
 
     try :
         autocorr_times = sampler.get_autocorr_time(discard=S['mcmc']['discard'])
@@ -104,5 +106,5 @@ def Sample (obs_case, obs_idx) :
 
     acceptance_rates = sampler.acceptance_fraction
 
-    return dict(chain=chain, autocorr_times=autocorr_times, acceptance_rates=acceptance_rates,
+    return dict(chain=chain, lp=lp, autocorr_times=autocorr_times, acceptance_rates=acceptance_rates,
                 ml_theta=ml_theta, true_theta=ll.theta_real)
