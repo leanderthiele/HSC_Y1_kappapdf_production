@@ -15,6 +15,10 @@ with np.load(f'real_chain_{run_hash}.npz') as f :
 idx = np.argmax(lp)
 theta_bf = chain[idx]
 
+dof = 12 + 2
+chisq_red_bf = -2 * lp[idx] / dof
+print(f'chisq_red_bf = {chisq_red_bf}')
+
 cd = CompressedData()
 real_data = cd.get_datavec('real')[0]
 fid_data = cd.get_datavec('fiducial')
@@ -26,7 +30,11 @@ theory_bf = emulator(theta_bf)
 fig, ax = plt.subplots()
 
 x = np.arange(len(real_data))
-ax.plot(x, (real_data - theory_bf)/sigma, linestyle='none', marker='o')
+y = (real_data - theory_bf)/sigma
+
+np.save(f'deltax_{run_hash}.npy', y)
+
+ax.plot(x, y, linestyle='none', marker='o')
 ax.axhline(0, color='grey', linestyle='dashed')
 
 ax.set_xlabel('data vector index')

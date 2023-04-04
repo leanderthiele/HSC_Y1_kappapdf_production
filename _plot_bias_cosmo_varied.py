@@ -8,7 +8,8 @@ from data import Data
 from settings import CHAIN_ROOT
 from _plot_style import *
 
-run_hash = '9d56790a0f55a6885899ec32284b91bd'
+# this is 9d56 but with subsample=25 turned on
+run_hash = 'a98c33f02a1d0e6efa58e589da36f5c5'
 
 fnames = glob(f'{CHAIN_ROOT}/cosmo_varied_{run_hash}/coverage_data_[0-9]*.dat')
 indices = np.concatenate([np.loadtxt(fname, usecols=(0, ), dtype=int) for fname in fnames])

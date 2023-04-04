@@ -1,5 +1,6 @@
 import numpy as np
 from matplotlib import pyplot as plt
+import matplotlib as mpl
 from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 
 from scipy.optimize import basinhopping
@@ -33,7 +34,7 @@ def PlotRealPosteriors (runs, make_label, have_numbers=True, all_have_Cl=False) 
         std = np.std(S8)
         
         kde = KernelDensity(kernel='epanechnikov',
-                            bandwidth=0.03 if 'C_\ell' not in run_info and not all_have_Cl else 0.01)\
+                            bandwidth=0.01 if 'C_\ell' not in run_info and not all_have_Cl else 0.01)\
                     .fit(S8.reshape(-1, 1))
 
         if have_numbers :
@@ -71,13 +72,18 @@ def PlotRealPosteriors (runs, make_label, have_numbers=True, all_have_Cl=False) 
     h = '9d56790a0f55a6885899ec32284b91bd'
     if h in runs.keys() :
         y = np.load(f'deltax_{h}.npy')
-        axins = inset_axes(ax, width='35%', height='30%', loc='lower left',
-                           bbox_to_anchor=(0.05, 0.2), bbox_transform=ax.transAxes)
-        axins.plot(y, linestyle='none', marker='o')
-        axins.axhline(0, color='grey', linestyle='dashed')
-        axins.set_xticks([])
-        axins.set_yticks([-2, -1, 0, 1])
-        axins.set_ylabel('$\Delta x/\sigma$')
+
+        with mpl.rc_context({'text.color': 'grey', 'axes.edgecolor': 'grey', 'ytick.color': 'grey', 'ytick.labelcolor': 'grey'}) :
+            axins = inset_axes(ax, width='30%', height='30%', loc='lower left',
+                               bbox_to_anchor=(0.07, 0.2, 1, 1), bbox_transform=ax.transAxes)
+            axins.plot(y, linestyle='none', marker='o', color=default_colors[list(runs.keys()).index(h)],
+                       markersize=2)
+            axins.axhline(0, color='grey', linestyle='dashed')
+            axins.tick_params(axis='both', which='major', labelsize='x-small')
+            axins.set_xticks([])
+            axins.set_yticks([-2, -1, 0, 1])
+            axins.text(0.95, 0.05, '$(x_{\sf HSC}-x_{\sf bf}) / \sigma$',
+                       va='bottom', ha='right', transform=axins.transAxes, fontsize='small')
 
 
     ax.legend(loc='upper left', frameon=False, labelspacing=0.7)
