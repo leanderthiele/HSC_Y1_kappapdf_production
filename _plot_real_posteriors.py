@@ -69,15 +69,28 @@ def PlotRealPosteriors (runs, make_label, have_numbers=True, all_have_Cl=False) 
                     transform=ax.transData)
 
     # the best-fit inset
-    h = '9d56790a0f55a6885899ec32284b91bd'
-    if h in runs.keys() :
-        y = np.load(f'deltax_{h}.npy')
-
+    hashes = [
+              '22927c646f516731cb39e41daab9e6e5',
+              'fd47089b3f34889e50653bbb4ebeff98',
+              '9d56790a0f55a6885899ec32284b91bd',
+             ]
+    if all(h in runs.keys() for h in hashes) :
         with mpl.rc_context({'text.color': 'grey', 'axes.edgecolor': 'grey', 'ytick.color': 'grey', 'ytick.labelcolor': 'grey'}) :
             axins = inset_axes(ax, width='30%', height='30%', loc='lower left',
                                bbox_to_anchor=(0.07, 0.2, 1, 1), bbox_transform=ax.transAxes)
-            axins.plot(y, linestyle='none', marker='o', color=default_colors[list(runs.keys()).index(h)],
-                       markersize=2)
+            for h in hashes :
+                y = np.load(f'deltax_{h}.npy')
+                if 'PDF' in runs[h] and 'ell' in runs[h] :
+                    x = np.arange(14)
+                elif 'PDF' in runs[h] and 'ell' not in runs[h] :
+                    x = np.arange(2)
+                elif 'PDF' not in runs[h] and 'ell' in runs[h] :
+                    x = np.arange(2, 14)
+                else :
+                    assert False
+                axins.plot(x, y, linestyle='none', marker='o',
+                           color=default_colors[list(runs.keys()).index(h)],
+                           markersize=2)
             axins.axhline(0, color='grey', linestyle='dashed')
             axins.tick_params(axis='both', which='major', labelsize='x-small')
             axins.set_xticks([])
