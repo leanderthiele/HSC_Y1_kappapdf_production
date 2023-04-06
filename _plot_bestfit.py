@@ -31,6 +31,7 @@ fig, ax = plt.subplots()
 
 x = np.arange(len(real_data))
 y = (real_data - theory_bf)/sigma
+print(f'y ~ {np.min(y)} -- {np.max(y)}')
 
 np.save(f'deltax_{run_hash}.npy', y)
 
