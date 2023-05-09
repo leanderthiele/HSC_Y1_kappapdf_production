@@ -1,12 +1,13 @@
 import numpy as np
 from matplotlib import pyplot as plt
+from scipy.stats import chi2
 
 from settings import S, IDENT
 from compressed_data import CompressedData
 from gpr import GPR
 from _plot_style import *
 
-run_hash = '9d56790a0f55a6885899ec32284b91bd'
+run_hash = 'fd47089b3f34889e50653bbb4ebeff98'
 assert IDENT == run_hash
 
 with np.load(f'real_chain_{run_hash}.npz') as f :
@@ -15,9 +16,15 @@ with np.load(f'real_chain_{run_hash}.npz') as f :
 idx = np.argmax(lp)
 theta_bf = chain[idx]
 
-dof = 12 + 2
-chisq_red_bf = -2 * lp[idx] / dof
-print(f'chisq_red_bf = {chisq_red_bf}')
+chisq_bf = -2 * lp[idx]
+dof = 0
+if 'ps' in S :
+    dof += 12
+if 'pdf' in S :
+    dof += 2
+PTE = 1 - chi2(dof).cdf(chisq_bf)
+chisq_red_bf = chisq_bf / dof
+print(f'chisq_red_bf = {chisq_red_bf}, PTE = {PTE}')
 
 cd = CompressedData()
 real_data = cd.get_datavec('real')[0]

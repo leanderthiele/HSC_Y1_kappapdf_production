@@ -32,7 +32,7 @@ for uniq_cosmo_idx in uniq_cosmo_indices :
     avg_bias.append( np.median( (mean[select] - theta[uniq_cosmo_idx][0]) / std[select] ) )
 avg_bias = np.array(avg_bias)
 
-fig, ax = plt.subplots(figsize=(3, 3))
+fig, ax = plt.subplots(figsize=(5, 5))
 vmax = 1
 im = ax.scatter(*theta[uniq_cosmo_indices].T, c=avg_bias, vmin=-vmax, vmax=vmax,
                 cmap='coolwarm', edgecolors=black)

@@ -20,7 +20,7 @@ def PlotBias1D (runs, make_label) :
     fine_centers = np.linspace(*S8_range, num=500)
 
     fig, ax = plt.subplots(figsize=(5, 5))
-    fig_bars, ax_bars = plt.subplots(figsize=(2, 3))
+    fig_bars, ax_bars = plt.subplots(figsize=(3, 5))
 
     # this is just some running index
     ycoord = 0

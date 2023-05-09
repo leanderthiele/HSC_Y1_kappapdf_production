@@ -36,15 +36,29 @@ d_hsc -= offset
 
 gaussian = -0.5 * kappa**2
 
-fig, ax = plt.subplots(figsize=(5, 2))
+fig, ax = plt.subplots(figsize=(5, 5))
+
+# currently unused, could be used to indicate cuts but I feel the figure
+# would be to busy for an introductory one
+cut = [0, 1, 2, 9, ]
+where_cut = np.array([ii in cut for ii in range(19)], dtype=bool)
 
 ax.plot(kappa, d_fid, label='fiducial simulations')
-ax.errorbar(kappa, d_hsc, yerr=sigma, label='HSC Y1',
-        linestyle='none', marker='o')
+if False :
+    ax.errorbar(kappa, d_hsc, yerr=sigma, label='HSC Y1',
+                linestyle='none', marker='o')
+else :
+    l = ax.errorbar(kappa[~where_cut], d_hsc[~where_cut], yerr=sigma[~where_cut],
+                    label='HSC Y1', linestyle='none', marker='o')
+    color = plt.getp(l[0], 'color')
+    ax.errorbar(kappa[where_cut], d_hsc[where_cut], yerr=sigma[where_cut],
+                linestyle='none', marker='o',
+                markeredgecolor=color, ecolor=color, fillstyle='full', markerfacecolor=white)
 ax.plot(kappa, gaussian, label='Gaussian',
         color=black)
 
 ax.set_xlim(-4, 4)
+ax.set_yticks([0, -3, -6, -9])
 ax.set_xlabel('$\kappa / \sigma(\kappa)$')
 ax.set_ylabel('$\log {\sf PDF}(\kappa) + {\sf const}$')
 ax.legend(frameon=False, loc='lower center')

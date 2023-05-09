@@ -8,7 +8,7 @@ S8, Om = Data().get_cosmo('cosmo_varied').T
 
 prior = { 'S8': (0.50, 1.00), 'Om': (0.20, 0.40), }
 
-fig, ax = plt.subplots(figsize=(5,2.5))
+fig, ax = plt.subplots(figsize=(5,5))
 
 ax.plot(Om, S8, linestyle='none', marker='o')
 rect = plt.Rectangle( (prior['Om'][0], prior['S8'][0]),

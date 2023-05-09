@@ -3,15 +3,17 @@
 from matplotlib import pyplot as plt
 from itertools import cycle
 
-if False :
+if True :
     plt.style.use('dark_background')
     black = 'white'
+    white = 'black'
     bg_ident = '_dark_bg'
 else :
     black = 'black'
+    white = 'white'
     bg_ident = ''
 
-if False :
+if True :
     fmt = 'png'
     kwargs = dict(transparent=True, dpi=400)
 else :

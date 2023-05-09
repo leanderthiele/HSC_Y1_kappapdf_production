@@ -20,7 +20,7 @@ x = np.linspace(*prior, num=500)
 
 def PlotRealPosteriors (runs, make_label, have_numbers=True, all_have_Cl=False) :
 
-    fig, ax = plt.subplots(figsize=(5,3))
+    fig, ax = plt.subplots(figsize=(5,5))
 
     for run_hash, run_info in runs.items() :
 
@@ -46,7 +46,7 @@ def PlotRealPosteriors (runs, make_label, have_numbers=True, all_have_Cl=False) 
             S8_lo = np.quantile(S8, 0.16)
             delta_hi = S8_hi - S8_map
             delta_lo = S8_map - S8_lo
-            print(f'{run_hash[:4]}: S8 = {S8_map:.4f} +{delta_hi:.4f} -{delta_lo:.4f} [{label}]')
+            print(f'{run_hash[:4]}: S8 = {S8_map:.4f} +{delta_hi:.4f} -{delta_lo:.4f} [{label}] (mean={np.mean(S8):.4f}, median={np.median(S8):.4f})')
             label = f'{label}, ${S8_map:.3f}^{{+ {delta_hi:.3f} }}_{{- {delta_lo:.3f} }}$'
 
         logh = kde.score_samples(x.reshape(-1, 1))
@@ -81,14 +81,14 @@ def PlotRealPosteriors (runs, make_label, have_numbers=True, all_have_Cl=False) 
             for h in hashes :
                 y = np.load(f'deltax_{h}.npy')
                 if 'PDF' in runs[h] and 'ell' in runs[h] :
-                    x = np.arange(14)
+                    x_ = np.arange(14)
                 elif 'PDF' in runs[h] and 'ell' not in runs[h] :
-                    x = np.arange(2)
+                    x_ = np.arange(2)
                 elif 'PDF' not in runs[h] and 'ell' in runs[h] :
-                    x = np.arange(2, 14)
+                    x_ = np.arange(2, 14)
                 else :
                     assert False
-                axins.plot(x, y, linestyle='none', marker='o',
+                axins.plot(x_, y, linestyle='none', marker='o',
                            color=default_colors[list(runs.keys()).index(h)],
                            markersize=2)
             axins.axhline(0, color='grey', linestyle='dashed')
