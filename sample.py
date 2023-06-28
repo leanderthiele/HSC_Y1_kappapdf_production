@@ -93,7 +93,7 @@ def Sample (obs_case, obs_idx) :
     # increase the stretch parameter from its default (2) to decrease acceptance rate and correlation time
     sampler = emcee.EnsembleSampler(S['mcmc']['nwalkers'], 2, logprob, args=(ll, ),
                                     moves=emcee.moves.StretchMove(a=5))
-    sampler.run_mcmc(init_theta, (10 if obs_case=='real' else 1) * S['mcmc']['nsteps'], progress=(obs_case=='real'))
+    sampler.run_mcmc(init_theta, (4 if obs_case=='real' else 1) * S['mcmc']['nsteps'], progress=(obs_case=='real'))
 
     kwargs = dict(thin=S['mcmc']['thin'], discard=S['mcmc']['discard'])
     chain = sampler.get_chain(**kwargs)

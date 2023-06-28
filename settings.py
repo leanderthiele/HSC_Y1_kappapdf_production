@@ -3,6 +3,16 @@
 smoothing scales are
 0 --  1 arcmin
 1 --  2 arcmin
+2 --  4 arcmin
+3 --  5 arcmin
+4 --  8 arcmin
+5 -- 10 arcmin
+We are missing the 7 arcmin that we used in the paper... :(
+
+
+OLD VERSION (OLD2)
+0 --  1 arcmin
+1 --  2 arcmin
 2 --  5 arcmin
 3 --  7 arcmin
 4 --  8 arcmin
@@ -36,8 +46,9 @@ S = {
      'pdf': {
              'unitstd': True,
              'log': True,
+             # 'zs': [1, 2, 3, 4, ],
              'zs': [1, 2, 3, ],
-             'smooth': [2, 3, 5, ],
+             'smooth': [3, 4, 5, ],
              'rebin': 1,
              'low_cut': 3,
              'high_cut': 0,
@@ -96,7 +107,7 @@ S = {
      # 'rbf_length_scale': 3.0,
     }
 
-del S['ps']
+del S['pdf']
 
 import hashlib
 IDENT = hashlib.md5(f'{S}'.encode('utf-8')).hexdigest()

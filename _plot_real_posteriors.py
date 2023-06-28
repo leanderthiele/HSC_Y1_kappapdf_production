@@ -99,7 +99,7 @@ def PlotRealPosteriors (runs, make_label, have_numbers=True, all_have_Cl=False) 
                        va='bottom', ha='right', transform=axins.transAxes, fontsize='small')
 
 
-    ax.legend(loc='upper left', frameon=False, labelspacing=0.7)
+    ax.legend(loc='center left', frameon=False, labelspacing=0.7)
     ax.set_xlim(*prior)
     ax.set_ylim(0, None)
     ax.set_xlabel('$S_8 = \sigma_8 \sqrt{\Omega_m/0.3}$')

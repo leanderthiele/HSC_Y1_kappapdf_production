@@ -68,7 +68,8 @@ class Workers :
         chain = chain.reshape(-1, chain.shape[-1])
         mean = np.mean(chain[:, 0])
         std = np.std(chain[:, 0])
-        line = f'{mean:.8f} {std:.8f}'
+        median = np.median(chain[:, 0])
+        line = f'{mean:.8f} {std:.8f} {median:.8f}'
 
         if OBS_CASE.startswith('cosmo_varied') :
             true_theta = result['true_theta']
@@ -143,12 +144,12 @@ if __name__ == '__main__' :
         # this is for getting calibration checks
         summary_fname = f'{WRKDIR}/coverage_data_{rnd}.dat'
         with open(summary_fname, 'w') as f :
-            f.write('# index, oneminusalpha, ranks..., mean, std, map(S8)\n')
+            f.write('# index, oneminusalpha, ranks..., mean, std, median, map(S8)\n')
     else :
         # this is for getting bias checks
         summary_fname = f'{WRKDIR}/bias_data_{rnd}.dat'
         with open(summary_fname, 'w') as f :
-            f.write('# index, mean, std\n')
+            f.write('# index, mean, std, median\n')
 
     LOCK = mp.Lock()
     workers = Workers(summary_fname)

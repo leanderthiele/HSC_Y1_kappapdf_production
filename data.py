@@ -22,7 +22,8 @@ class Data :
               'mbias/mbias_plus':  100,
               'real': 1,
              }
-    NSMOOTH_ALL = 8
+
+    NSMOOTH_ALL = 6
     NBINS_ALL = {'pdf': 19, 'ps': 14, }
 
     # the observational layout
@@ -188,8 +189,11 @@ class Data :
         out = f'{out}/{stat if stat=="pdf" else "clee"}'
         out = f'{out}_{f"z{zs_idx}" if zs_idx else "singlez"}'
         out = f'{out}_all_smooths_{field}'
-        if stat == 'pdf' and S[stat]['unitstd'] and case != 'real' :
+        if stat == 'pdf' and S[stat]['unitstd'] :
             out = f'{out}_stdmap'
+        out = f'{out}_mtot'
+        if stat == 'pdf' and case.startswith('real') : 
+            out = f'{out}2'
         out = f'{out}.npy'
         return out
 
