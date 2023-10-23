@@ -11,7 +11,7 @@ Nbins_qq = 20
 Nbins_ra = 20
 edges_qq, edges_ra = [np.linspace(0, 1, num=Nbins+1) for Nbins in [Nbins_qq, Nbins_ra, ]]
 
-def PlotCalibration (runs, make_label, qq_legend_kwargs=None, ra_legend_kwargs=None) :
+def PlotCalibration (runs, make_label, qq_legend_kwargs=None, ra_legend_kwargs=None, ncol=3) :
     fig_qq, ax_qq = plt.subplots(figsize=(5, 4))
     fig_ra, ax_ra = plt.subplots(figsize=(5, 4))
 
@@ -59,13 +59,13 @@ def PlotCalibration (runs, make_label, qq_legend_kwargs=None, ra_legend_kwargs=N
         a.fill_between([0, 1], avg-nsigma*np.sqrt(avg), avg+nsigma*np.sqrt(avg), alpha=0.3, color='grey')
 
     if qq_legend_kwargs is None :
-        qq_legend_kwargs = dict(loc='upper left', ncol=3)
+        qq_legend_kwargs = dict(loc='upper left', ncol=ncol)
     ax_qq.legend(**qq_legend_kwargs, frameon=False)
     ax_qq.set_xlabel('confidence level')
     ax_qq.set_ylabel('number of chains')
 
     if ra_legend_kwargs is None :
-        ra_legend_kwargs = dict(loc='lower left', ncol=3)
+        ra_legend_kwargs = dict(loc='lower left', ncol=ncol)
     ax_ra.legend(**ra_legend_kwargs, frameon=False)
     ax_ra.set_xlabel('fractional rank of true $S_8$ within MCMC samples')
     ax_ra.set_ylabel('number of chains')

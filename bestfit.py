@@ -24,4 +24,4 @@ for run_hash, run_info in runs.items() :
         dof += 12
 
     chisq_red = -2 * lp[idx] / dof
-    print(f'{run_info}: chisq_red_bf = {chisq_red}')
+    print(f'{run_info}: dof = {dof}, chisq_red_bf = {chisq_red}, chisq_bf = {-2 * lp[idx]}')

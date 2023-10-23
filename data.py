@@ -23,7 +23,7 @@ class Data :
               'real': 1,
              }
 
-    NSMOOTH_ALL = 6
+    NSMOOTH_ALL = 8
     NBINS_ALL = {'pdf': 19, 'ps': 14, }
 
     # the observational layout
@@ -187,13 +187,16 @@ class Data :
             assert 1 <= model <= Data.NCOS
             out = f'{out}/model{model}'
         out = f'{out}/{stat if stat=="pdf" else "clee"}'
-        out = f'{out}_{f"z{zs_idx}" if zs_idx else "singlez"}'
+        out = f'{out}_{f"z{zs_idx}" if zs_idx else "singlez_0.3_to_1.2"}'
         out = f'{out}_all_smooths_{field}'
         if stat == 'pdf' and S[stat]['unitstd'] :
             out = f'{out}_stdmap'
         out = f'{out}_mtot'
-        if stat == 'pdf' and case.startswith('real') : 
-            out = f'{out}2'
+
+        # TODO we don't have the mtot2 files anymore here, what happened to them?
+        # if stat == 'pdf' and case.startswith('real') and S[stat]['unitstd'] : 
+        #     out = f'{out}2'
+
         out = f'{out}.npy'
         return out
 
@@ -209,7 +212,7 @@ class Data :
         out = f'{SIM_ROOT}/ratio_{ratio_case}'
         out = f'{out}/{stat if stat=="pdf" else "power_spectrum"}'
         out = f'{out}/{stat if stat=="pdf" else "clee"}'
-        out = f'{out}_{f"z{zs_idx}" if zs_idx else "singlez"}'
+        out = f'{out}_{f"z{zs_idx}" if zs_idx else "singlez_0.3_to_1.2"}'
         if stat == 'pdf' and S[stat]['unitstd'] and ratio_case != 'real' :
             out = f'{out}_stdmap'
         out = f'{out}.npy'

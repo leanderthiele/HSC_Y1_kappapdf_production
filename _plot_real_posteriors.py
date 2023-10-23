@@ -20,7 +20,7 @@ x = np.linspace(*prior, num=500)
 
 def PlotRealPosteriors (runs, make_label, have_numbers=True, all_have_Cl=False) :
 
-    fig, ax = plt.subplots(figsize=(5,5))
+    fig, ax = plt.subplots(figsize=(5, 3))
 
     for run_hash, run_info in runs.items() :
 
@@ -48,6 +48,8 @@ def PlotRealPosteriors (runs, make_label, have_numbers=True, all_have_Cl=False) 
             delta_lo = S8_map - S8_lo
             print(f'{run_hash[:4]}: S8 = {S8_map:.4f} +{delta_hi:.4f} -{delta_lo:.4f} [{label}] (mean={np.mean(S8):.4f}, median={np.median(S8):.4f})')
             label = f'{label}, ${S8_map:.3f}^{{+ {delta_hi:.3f} }}_{{- {delta_lo:.3f} }}$'
+        else :
+            print(f'{run_hash[:4]}: [{label}] mean={np.mean(S8):.4f}, median={np.median(S8):.4f}')
 
         logh = kde.score_samples(x.reshape(-1, 1))
         logh -= np.max(logh)
@@ -99,7 +101,7 @@ def PlotRealPosteriors (runs, make_label, have_numbers=True, all_have_Cl=False) 
                        va='bottom', ha='right', transform=axins.transAxes, fontsize='small')
 
 
-    ax.legend(loc='center left', frameon=False, labelspacing=0.7)
+    ax.legend(loc='upper left', frameon=False, labelspacing=0.7)
     ax.set_xlim(*prior)
     ax.set_ylim(0, None)
     ax.set_xlabel('$S_8 = \sigma_8 \sqrt{\Omega_m/0.3}$')
